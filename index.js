@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import UserRouter from './router/UserRouter.js';
 
 dotenv.config();
 
@@ -13,6 +14,8 @@ app.use(express.json());
 mongoose.connect(process.env.DB_URL).then(() => {
     console.log("DB Start");
   });
+
+  app.use('/api',UserRouter);
   
 
   app.listen(process.env.PORT, () => {
