@@ -20,6 +20,11 @@ const UserSchema = new mongoose.Schema({
         default: false,
         require: true,
     },
+    isPartner: {
+        type: Boolean,
+        default: true,
+        require: true,
+    },
 }, { timestamps: true });
 
 export default mongoose.model('User',UserSchema)

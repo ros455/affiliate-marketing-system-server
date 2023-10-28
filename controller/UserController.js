@@ -1,4 +1,5 @@
 import UserModel from '../model/User.js';
+import PartnerLinkModel from '../model/PartnerLink.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
@@ -11,10 +12,17 @@ export const register = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
 
+        const canditate = await UserModel.findOne({ email });
+
+        if (canditate) {
+          return res.status(500).json({ message: 'Email already exists' });
+        }
+
         const user = await UserModel.create({
             email,
             name,
             isAdmin: false,
+            isPartner: true,
             disabled: false,
             password: hash,
         });
@@ -54,7 +62,7 @@ export const login = async (req, res) => {
         if(!isValidPass) {
           console.log('PASSWORD');
             return res.status(400).json({
-                message: 'Password not found',
+                message: 'Password or email wrong',
             })
         }
 
@@ -94,3 +102,83 @@ export const getMe = async (req, res) => {
     }
   }
   
+
+  export const updateData = async (req, res) => {
+    try {
+      const {id, email, name, password} = req.body;
+
+      const user = await UserModel.findById(id);
+
+      if(!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      if(password) {
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, salt);
+        user.password = hash;
+      }
+      user.email = email;
+      user.name = name;
+
+
+      await user.save();
+
+      res.json(user)
+
+    } catch(error) {
+      console.log(e);
+      res.status(500).json({
+        message: 'Access denied'
+      });
+    }
+  }
+
+  export const getAllUsers = async (req, res) => {
+    try {
+      const userData = await UserModel.find()
+      res.json(userData);
+    } catch(error) {
+      console.log(error);
+      res.status(500).json({
+        message: 'Access denied'
+      });
+    }
+  };
+
+  export const createLink = async (req, res) => {
+    try {
+      const {link, partnerId} = req.body;
+      const data = await PartnerLinkModel.create({
+        partnerId,
+        link
+      })
+
+      res.json(data)
+    } catch(error) {
+      console.log(error);
+      res.status(500).json({
+        message: 'Access denied'
+      });
+    }
+  } 
+
+  export const handleLink = async (req, res) => {
+    try {
+      const { link } = req.query;
+      const partnerLink = await PartnerLinkModel.findOne({ link });
+      if (partnerLink) {
+        partnerLink.clicks += 1;
+        await partnerLink.save();
+        res.redirect('https://www.google.com/');
+        // res.status(200).send('succsses');
+      } else {
+        res.status(404).send('Link not found');
+      }
+    } catch(error) {
+      console.log(error);
+      res.status(500).json({
+        message: 'Access denied'
+      });
+    }
+  }
