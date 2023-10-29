@@ -148,10 +148,11 @@ export const getMe = async (req, res) => {
 
   export const createLink = async (req, res) => {
     try {
-      const {link, partnerId} = req.body;
+      const {link, partnerId, promotionalСode} = req.body;
       const data = await PartnerLinkModel.create({
         partnerId,
-        link
+        link,
+        promotionalСode
       })
 
       res.json(data)
@@ -167,13 +168,35 @@ export const getMe = async (req, res) => {
     try {
       const { link } = req.query;
       const partnerLink = await PartnerLinkModel.findOne({ link });
+      const time = {date: '28.10.2023'}
       if (partnerLink) {
-        partnerLink.clicks += 1;
+        partnerLink.clicks.push(time)
         await partnerLink.save();
-        res.redirect('https://www.google.com/');
-        // res.status(200).send('succsses');
+        // res.redirect('https://www.google.com/');
+        res.status(200).send('succsses');
       } else {
         res.status(404).send('Link not found');
+      }
+    } catch(error) {
+      console.log(error);
+      res.status(500).json({
+        message: 'Access denied'
+      });
+    }
+  }
+
+  export const handleBuy = async (req, res) => {
+    try {
+      const { promotionalСode } = req.body;
+      console.log('promotionalСode',promotionalСode);
+      const data = await PartnerLinkModel.findOne({ promotionalСode });
+      const time = {date: '28.10.2023'}
+      if(data) {
+        data.buys.push(time)
+        await data.save();
+        res.status(200).send('succsses');
+      } else {
+        res.status(404).send('promotional code not found');
       }
     } catch(error) {
       console.log(error);
