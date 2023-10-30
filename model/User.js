@@ -15,6 +15,22 @@ const UserSchema = new mongoose.Schema({
         type:Boolean,
         default: false,
     },
+    link: {
+        type: String,
+        default: ''
+    },
+    promotionalCode: {
+        type: String,
+        default: ''
+    },
+    bonus: {
+        type: Number,
+        default: 0
+    },
+    balance: {
+        type: Number,
+        default: 0
+    },
     isAdmin: {
         type: Boolean,
         default: false,
@@ -25,6 +41,7 @@ const UserSchema = new mongoose.Schema({
         default: true,
         require: true,
     },
+    statistics: { type: mongoose.Schema.Types.ObjectId, ref: 'PartnerStatistic' },
 }, { timestamps: true });
 
 export default mongoose.model('User',UserSchema)

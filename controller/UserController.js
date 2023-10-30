@@ -1,10 +1,48 @@
 import UserModel from '../model/User.js';
-import PartnerLinkModel from '../model/PartnerLink.js';
+import PartnerStatistic from '../model/PartnerStatistic.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import dotenv from 'dotenv';
 
-// dotenv.config();
+
+// export const createPartnerStatistic = async (id) => {
+//   try {
+//     await PartnerStatistic.create({
+//       partnerId: id,
+//       event: [
+//         {
+//           date: '31.10.2023',
+//             clicks: [],
+//             buys: [],
+//         }
+//     ],
+//     })
+
+//   } catch(error) {
+//     console.log(error);
+//     res.status(500).json({
+//       message: 'Access denied'
+//     });
+//   }
+// } 
+
+export const createPartnerStatistic = async (userId) => {
+  try {
+    const statistics = await PartnerStatistic.create({
+      partnerId: userId,
+      event: [
+        {
+          date: '31.10.2023',
+          clicks: [],
+          buys: [],
+        }
+      ],
+    });
+    return statistics;
+  } catch(error) {
+    console.error('Помилка при створенні статистики:', error);
+  }
+}
+
 
 export const register = async (req, res) => {
     try {
@@ -17,15 +55,27 @@ export const register = async (req, res) => {
         if (canditate) {
           return res.status(500).json({ message: 'Email already exists' });
         }
+        const link = 'random';
+        const promotionalСode = 'random';
 
         const user = await UserModel.create({
             email,
             name,
+            link,
+            promotionalСode,
             isAdmin: false,
             isPartner: true,
             disabled: false,
             password: hash,
         });
+
+        const statistics = await createPartnerStatistic(user._id);
+        user.statistics = statistics._id;
+        await user.save();
+
+        if(user) {
+          createPartnerStatistic(user._id)
+        }
 
         const token = jwt.sign({ id: user._id }, process.env.TOKEN_KEY, { expiresIn: '30d' });
 
@@ -84,7 +134,8 @@ export const login = async (req, res) => {
 
 export const getMe = async (req, res) => {
     try {
-      const user = await UserModel.findById(req.userId);
+      const user = await UserModel.findById(req.userId)
+      .populate('statistics');
   
       if (!user) {
         return res.status(404).json({
@@ -134,11 +185,29 @@ export const getMe = async (req, res) => {
     }
   }
 
+  // export const getAllUsers = async (req, res) => {
+  //   try {
+  //     const userData = await UserModel.find()
+  //     res.json(userData);
+  //   } catch(error) {
+  //     console.log(error);
+  //     res.status(500).json({
+  //       message: 'Access denied'
+  //     });
+  //   }
+  // };
+
   export const getAllUsers = async (req, res) => {
     try {
-      const userData = await UserModel.find()
-      res.json(userData);
-    } catch(error) {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 5;
+  
+      const skip = (page - 1) * limit;
+      const userData = await UserModel.find().skip(skip).limit(limit);
+
+      console.log('userData',userData);
+      res.json(userData.slice(1));
+    } catch (error) {
       console.log(error);
       res.status(500).json({
         message: 'Access denied'
@@ -146,62 +215,18 @@ export const getMe = async (req, res) => {
     }
   };
 
-  export const createLink = async (req, res) => {
+  export const searchUsers = async (req, res) => {
     try {
-      const {link, partnerId, promotionalСode} = req.body;
-      const data = await PartnerLinkModel.create({
-        partnerId,
-        link,
-        promotionalСode
-      })
-
-      res.json(data)
-    } catch(error) {
+      const { page = 1, limit = 2, search = '' } = req.query;
+  
+      const skip = (page - 1) * limit;
+      const query = search ? { name: new RegExp(search, 'i') } : {};
+      const users = await UserModel.find(query).skip(skip).limit(limit)
+      .populate('statistics')
+  
+      res.json(users);
+    } catch (error) {
       console.log(error);
-      res.status(500).json({
-        message: 'Access denied'
-      });
+      res.status(500).json({ message: 'Server error' });
     }
-  } 
-
-  export const handleLink = async (req, res) => {
-    try {
-      const { link } = req.query;
-      const partnerLink = await PartnerLinkModel.findOne({ link });
-      const time = {date: '28.10.2023'}
-      if (partnerLink) {
-        partnerLink.clicks.push(time)
-        await partnerLink.save();
-        // res.redirect('https://www.google.com/');
-        res.status(200).send('succsses');
-      } else {
-        res.status(404).send('Link not found');
-      }
-    } catch(error) {
-      console.log(error);
-      res.status(500).json({
-        message: 'Access denied'
-      });
-    }
-  }
-
-  export const handleBuy = async (req, res) => {
-    try {
-      const { promotionalСode } = req.body;
-      console.log('promotionalСode',promotionalСode);
-      const data = await PartnerLinkModel.findOne({ promotionalСode });
-      const time = {date: '28.10.2023'}
-      if(data) {
-        data.buys.push(time)
-        await data.save();
-        res.status(200).send('succsses');
-      } else {
-        res.status(404).send('promotional code not found');
-      }
-    } catch(error) {
-      console.log(error);
-      res.status(500).json({
-        message: 'Access denied'
-      });
-    }
-  }
+  };

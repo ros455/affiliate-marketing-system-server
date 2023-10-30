@@ -10,8 +10,5 @@ router.post('/login',UsersController.login);
 router.patch('/update-user-data',UsersController.updateData);
 router.get('/get-me',checkAuth,UsersController.getMe);
 router.get('/get-all-users',checkAdmin,UsersController.getAllUsers);
-router.get('/click',UsersController.handleLink);
-router.post('/buy',UsersController.handleBuy);
-router.post('/create-link',UsersController.createLink);
-
+router.get('/search-users',UsersController.searchUsers);
 export default router;
