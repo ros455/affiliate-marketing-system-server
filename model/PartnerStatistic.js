@@ -24,6 +24,44 @@ const partnerStatisticSchema = new mongoose.Schema({
     buysAllPeriod: {
         type:Number,
         default: 0
+    },
+    chartsMonth: {
+        buys: [
+            {
+                date:{
+                    type:String,
+                    default: ''
+                },
+                number: {
+                    type: Number,
+                    default: 0,
+                }
+            }
+        ],
+        clicks: [
+            {
+                date:{
+                    type:String,
+                    default: ''
+                },
+                number: {
+                    type: Number,
+                    default: 0,
+                }
+            }
+        ],
+        conversions: [
+            {
+                date:{
+                    type:String,
+                    default: ''
+                },
+                number: {
+                    type: Number,
+                    default: 0,
+                }
+            }
+        ]
     }
 }, { timestamps: true });
 

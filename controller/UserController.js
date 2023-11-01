@@ -2,7 +2,9 @@ import UserModel from '../model/User.js';
 import PartnerStatistic from '../model/PartnerStatistic.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-
+import moment from 'moment-timezone';
+const kyivTime = moment().tz('Europe/Kiev');
+const formattedDate = kyivTime.format('DD.MM.YYYY');
 
 // export const createPartnerStatistic = async (id) => {
 //   try {
@@ -27,11 +29,12 @@ import bcrypt from 'bcrypt';
 
 export const createPartnerStatistic = async (userId) => {
   try {
+    console.log('createPartnerStatistic');
     const statistics = await PartnerStatistic.create({
       partnerId: userId,
       event: [
         {
-          date: '31.10.2023',
+          date: formattedDate,
           clicks: [],
           buys: [],
         }
@@ -46,6 +49,7 @@ export const createPartnerStatistic = async (userId) => {
 
 export const register = async (req, res) => {
     try {
+      console.log('register');
         const { email, name, password } = req.body;
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
@@ -73,9 +77,9 @@ export const register = async (req, res) => {
         user.statistics = statistics._id;
         await user.save();
 
-        if(user) {
-          createPartnerStatistic(user._id)
-        }
+        // if(user) {
+        //   createPartnerStatistic(user._id)
+        // }
 
         const token = jwt.sign({ id: user._id }, process.env.TOKEN_KEY, { expiresIn: '30d' });
 

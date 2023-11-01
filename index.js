@@ -14,9 +14,12 @@ app.use(cors());
 app.use(express.json());
 
 const kyivTime = moment().tz('Europe/Kiev');
+const formattedDate = kyivTime.format('DD.MM.YYYY');
 const startTime = moment(kyivTime).set({ hour: 1, minute: 0, second: 0 }).valueOf();
 const endTime = moment(kyivTime).set({ hour: 2, minute: 0, second: 0 }).valueOf();
 const currentTime = Date.now();
+
+console.log('formattedDate',formattedDate);
 
 setInterval(() => {
   if (currentTime >= startTime && currentTime <= endTime) {
