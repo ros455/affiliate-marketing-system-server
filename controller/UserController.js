@@ -6,27 +6,6 @@ import moment from 'moment-timezone';
 const kyivTime = moment().tz('Europe/Kiev');
 const formattedDate = kyivTime.format('DD.MM.YYYY');
 
-// export const createPartnerStatistic = async (id) => {
-//   try {
-//     await PartnerStatistic.create({
-//       partnerId: id,
-//       event: [
-//         {
-//           date: '31.10.2023',
-//             clicks: [],
-//             buys: [],
-//         }
-//     ],
-//     })
-
-//   } catch(error) {
-//     console.log(error);
-//     res.status(500).json({
-//       message: 'Access denied'
-//     });
-//   }
-// } 
-
 export const createPartnerStatistic = async (userId) => {
   try {
     console.log('createPartnerStatistic');
@@ -234,3 +213,71 @@ export const getMe = async (req, res) => {
       res.status(500).json({ message: 'Server error' });
     }
   };
+
+  export const updateUserBalance = async (req, res) => {
+    try {
+      const {id, newBalance} = req.body;
+      const user = await UserModel.findById(id);
+      user.balance = newBalance;
+
+      await user.save();
+
+      res.json(user);
+    } catch(error) {
+      console.log(error);
+      res.status(500).json({
+        message: 'Access denied'
+      });
+    }
+  }
+
+  export const updateUserBonuse = async (req, res) => {
+    try {
+      const {id, newBonus} = req.body;
+      const user = await UserModel.findById(id);
+      user.bonus = newBonus;
+
+      await user.save();
+
+      res.json(user);
+    } catch(error) {
+      console.log(error);
+      res.status(500).json({
+        message: 'Access denied'
+      });
+    }
+  }
+
+  export const updateUserLink = async (req, res) => {
+    try {
+      const {id, newLink} = req.body;
+      const user = await UserModel.findById(id);
+      user.link = newLink;
+
+      await user.save();
+
+      res.json(user);
+    } catch(error) {
+      console.log(error);
+      res.status(500).json({
+        message: 'Access denied'
+      });
+    }
+  }
+
+  export const updateUserPromotionalCode = async (req, res) => {
+    try {
+      const {id, newCode} = req.body;
+      const user = await UserModel.findById(id);
+      user.promotionalCode = newCode;
+
+      await user.save();
+
+      res.json(user);
+    } catch(error) {
+      console.log(error);
+      res.status(500).json({
+        message: 'Access denied'
+      });
+    }
+  }

@@ -47,7 +47,19 @@ const jobEveryMonth05 = new CronJob('00 05 02 * *', () => {
 // Створення статистики для адміна
 export const createAdminStatistic = async (req, res) => {
     try {
-        const date = AdminStatisticModel.create({})
+        const date = await AdminStatisticModel.create({})
+        res.json(date)
+    } catch(error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Access denied'
+          });
+    }
+}
+
+export const getAdminStatistic = async (req, res) => {
+    try {
+        const date = await AdminStatisticModel.find();
         res.json(date)
     } catch(error) {
         console.log(error);

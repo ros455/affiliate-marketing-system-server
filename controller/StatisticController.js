@@ -117,5 +117,5 @@ export const createPartnerStatistic = async (req, res) => {
   }
 
   // setTimeout(() => {
-  //   ParthnerStatisticService.fillingCartMonth();
+  //   ParthnerStatisticService.createDefaultChartMonth();
   // },5000)

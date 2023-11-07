@@ -22,10 +22,10 @@ export const getMonthFromString = (dateString) => {
   
     // Додавання кожного дня місяця до масиву
     while (day <= endOfMonth) {
-      daysArray.push(day.format('DD.MM.YYYY'));
+      daysArray.push(day.format('DD'));
       day = day.clone().add(1, 'day');
     }
-  
+  console.log('daysArray',daysArray);
     return daysArray;
   };
 

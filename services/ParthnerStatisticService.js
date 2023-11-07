@@ -10,21 +10,61 @@ const codes = [
   {
     codesId: "100",
     date: "02.11.2023",
+    value: 10,
     code: "112233",
   },
   {
     codesId: "101",
     date: "02.11.2023",
+    value: 10,
     code: "445566",
   },
   {
     codesId: "102",
     date: "02.11.2023",
+    value: 10,
     code: "112233",
   },
   {
     codesId: "103",
     date: "02.11.2023",
+    value: 10,
+    code: "445566",
+  },
+  {
+    codesId: "104",
+    date: "02.11.2023",
+    value: 10,
+    code: "112233",
+  },
+  {
+    codesId: "105",
+    date: "02.11.2023",
+    value: 10,
+    code: "445566",
+  },
+  {
+    codesId: "106",
+    date: "02.11.2023",
+    value: 10,
+    code: "112233",
+  },
+  {
+    codesId: "107",
+    date: "02.11.2023",
+    value: 10,
+    code: "445566",
+  },
+  {
+    codesId: "108",
+    date: "02.11.2023",
+    value: 10,
+    code: "112233",
+  },
+  {
+    codesId: "109",
+    date: "02.11.2023",
+    value: 10,
     code: "445566",
   },
 ];
@@ -103,7 +143,6 @@ export const handleBuy = async () => {
   try {
     for (const item of codes) {
       const partner = await UserModel.findOne({ promotionalCode: item.code });
-      console.log("partner", partner);
       if (!partner) {
         console.log("Партнер не знайдений для коду:", item.code);
         continue;
@@ -125,7 +164,6 @@ export const handleBuy = async () => {
       const yesterdayEvent = statistic.event.filter(
         (item) => item.date == yesterday
       );
-      console.log('yesterdayEvent',yesterdayEvent);
       if(!yesterdayEvent && !uniqueArrayId.includes(item.codesId)) {
         statistic.event.push({
           date: yesterday,
@@ -144,6 +182,18 @@ export const handleBuy = async () => {
         })
       }
 
+      let balanceValue = partner.balance;
+
+      if(!uniqueArrayId.includes(item.codesId)) {
+        balanceValue += item.value * (partner.bonus / 100);
+        // console.log('balanceValue',balanceValue);
+      }
+      console.log('balanceValue',balanceValue);
+      if(partner.balance != balanceValue) {
+        console.log('work not equal');
+        partner.balance = balanceValue;
+      await partner.save();
+      }
       await statistic.save();
     }
   } catch (error) {

@@ -11,4 +11,8 @@ router.patch('/update-user-data',UsersController.updateData);
 router.get('/get-me',checkAuth,UsersController.getMe);
 router.get('/get-all-users',checkAdmin,UsersController.getAllUsers);
 router.get('/search-users',UsersController.searchUsers);
+router.patch('/update-user-balance',UsersController.updateUserBalance);
+router.patch('/update-user-bonus',UsersController.updateUserBonuse);
+router.patch('/update-user-link',UsersController.updateUserLink);
+router.patch('/update-user-promo-code',UsersController.updateUserPromotionalCode);
 export default router;
