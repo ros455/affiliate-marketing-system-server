@@ -1,68 +1,98 @@
 import mongoose from "mongoose";
 
-const partnerStatisticSchema = new mongoose.Schema({
-    partnerId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+const partnerStatisticSchema = new mongoose.Schema(
+  {
+    partnerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     event: [
-        {
+      {
+        date: String,
+        clicks: [String],
+        buys: [
+          {
             date: String,
-            clicks: [String],
-            buys: [String],
-        }
+            buyId: String
+          }
+        ],
+      },
     ],
     buysMonth: {
-        type:Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     clicksMonth: {
-        type:Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     clicksAllPeriod: {
-        type:Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     buysAllPeriod: {
-        type:Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     chartsMonth: {
         buys: [
-            {
-                date:{
-                    type:String,
-                    default: ''
-                },
-                number: {
-                    type: Number,
-                    default: 0,
-                }
-            }
+          {
+            date: String,
+            number: Number,
+          },
         ],
         clicks: [
-            {
-                date:{
-                    type:String,
-                    default: ''
-                },
-                number: {
-                    type: Number,
-                    default: 0,
-                }
-            }
+          {
+            date: String,
+            number: Number,
+          },
         ],
         conversions: [
-            {
-                date:{
-                    type:String,
-                    default: ''
-                },
-                number: {
-                    type: Number,
-                    default: 0,
-                }
-            }
-        ]
-    }
-}, { timestamps: true });
+          {
+            date: String,
+            number: Number,
+          },
+        ],
+      },
+    chartsYear: {
+        buys: [
+          {
+            date: String,
+            number: Number,
+          },
+        ],
+        clicks: [
+          {
+            date: String,
+            number: Number,
+          },
+        ],
+        conversions: [
+          {
+            date: String,
+            number: Number,
+          },
+        ],
+      },
+    chartsYearAllPeriod: {
+        buys: [
+          {
+            date: String,
+            number: Number,
+          },
+        ],
+        clicks: [
+          {
+            date: String,
+            number: Number,
+          },
+        ],
+        conversions: [
+          {
+            date: String,
+            number: Number,
+          },
+        ],
+      },
+  },
+  { timestamps: true }
+);
 
-export default mongoose.model('PartnerStatistic',partnerStatisticSchema)
+export default mongoose.model("PartnerStatistic", partnerStatisticSchema);

@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import UserRouter from './router/UserRouter.js';
 import StatisticRouter from './router/StatisticRouter.js';
+import AdminStatisticRouter from './router/AdminStatisticRouter.js';
 import moment from 'moment-timezone';
 
 dotenv.config();
@@ -33,6 +34,7 @@ mongoose.connect(process.env.DB_URL).then(() => {
 
   app.use('/api',UserRouter);
   app.use('/api',StatisticRouter);
+  app.use('/api',AdminStatisticRouter);
   
 
   app.listen(process.env.PORT, () => {
