@@ -31,6 +31,16 @@ const AdminStatisticSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    conversionAllPeriod: {
+      type: Number,
+      default: 0,
+    },
+    lastSevenDaysConversions: [
+        {
+          date: String,
+          number: Number,
+        },
+      ],
     chartsMonth: {
       buys: [
         {

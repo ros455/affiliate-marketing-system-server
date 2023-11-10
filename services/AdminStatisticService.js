@@ -11,8 +11,7 @@ const formattedDate = kyivTime.format('DD.MM.YYYY');
 export const calculateEventEveryDay = async () => {
     try {
         const allStatistic = await PartnerStatisticModel.find();
-        const adminId = '6546a57bf1048051d9ba2925';
-        const adminStatistic = await AdminStatisticModel.findById(adminId);
+        const adminStatistic = await AdminStatisticModel.findOne();
         const yesterday = moment().subtract(1, "day").format("DD.MM.YYYY");
         let eventDate;
         let eventClicks = 0;
@@ -43,22 +42,26 @@ export const calculateEventEveryDay = async () => {
 export const calculateNumbersEveryDay = async () => {
     try {
         const allStatistic = await PartnerStatisticModel.find();
-        const adminId = '6546a57bf1048051d9ba2925';
-        const adminStatistic = await AdminStatisticModel.findById(adminId);
+        const adminStatistic = await AdminStatisticModel.findOne();
         let clickMonth = 0;
         let buyMonth = 0;
         let clickAllPeriod = 0;
         let buyAllPeriod = 0;
+        let allConversions = 0;
         for (const oneStat of allStatistic) {
             clickMonth += oneStat.clicksMonth;
             buyMonth += oneStat.buysMonth;
             clickAllPeriod += oneStat.clicksAllPeriod;
             buyAllPeriod += oneStat.buysAllPeriod;
         }
+        if(allClicks && allBuys) {
+          allConversions = (allBuys / allClicks) * 100;
+        }
         adminStatistic.buysMonth = buyMonth;
         adminStatistic.clicksMonth = clickMonth;
         adminStatistic.clicksAllPeriod = clickAllPeriod;
         adminStatistic.buysAllPeriod = buyAllPeriod;
+        adminStatistic.conversionAllPeriod = allConversions;
 
         await adminStatistic.save();
     } catch(error) {
@@ -67,7 +70,6 @@ export const calculateNumbersEveryDay = async () => {
 }
 
 // Обчислюємо місячний графік
-
 export const calculateChartMonth = async () => {
   try {
     const allStatistic = await PartnerStatisticModel.find();
@@ -116,13 +118,11 @@ export const calculateChartMonth = async () => {
   }
 };
 
-
 // Обчислюємо річний графік
 export const calculateChartYear = async () => {
     try {
         const allStatistic = await PartnerStatisticModel.find();
-        const adminId = '6546a57bf1048051d9ba2925';
-        const adminStatistic = await AdminStatisticModel.findById(adminId);
+        const adminStatistic = await AdminStatisticModel.findOne();
         let buysNumber = 0;
         let clicksNumber = 0;
         let conversionsNumber = 0;
@@ -177,7 +177,6 @@ export const clearMonthDataAdmin = async () => {
   }
 };
 
-
 export const createDefaultChartMonth = async () => {
     const daysOfCurrentMonth = Services.getDaysArrayForCurrentMonth();
     const defaultArray = [];
@@ -225,3 +224,57 @@ export const createDefaultChartMonth = async () => {
 
       await statistic.save();
   }
+
+  export const createDefaultChartAllPeriod = async () => {
+    const monthCurrentYears = Services.getAllPeriodArray();
+    const defaultArray = [];
+
+    monthCurrentYears.forEach((item) => {
+      defaultArray.push({
+        date: item,
+        number: 0,
+      })
+    })
+
+    const statistic = await AdminStatisticModel.findOne();
+
+      if (!statistic) {
+        console.log('Статистика не знайдена');
+      }
+
+      statistic.chartsYearAllPeriod.clicks = defaultArray;
+      statistic.chartsYearAllPeriod.buys = defaultArray;
+      statistic.chartsYearAllPeriod.conversions = defaultArray;
+
+      await statistic.save();
+  }
+
+  export const createChartSevenDays = async () => {
+    try {
+      const adminStatistic = await AdminStatisticModel.findOne(); // Ця змінна не використовується у вашому коді
+      const allStatistic = await PartnerStatisticModel.find();
+  
+      // Створюємо новий масив з семи елементів, кожен з яких має date та number
+      let newArray = new Array(7).fill(null).map(() => ({ date: '', number: 0 }));
+  
+      // Перебираємо всі статистики
+      for (const oneStat of allStatistic) {
+        if (!oneStat) {
+          console.log('User not found');
+          continue;
+        }
+  
+        // Оновлюємо дані для кожного дня
+        oneStat.lastSevenDays.clicks.forEach((dailyStat, index) => {
+          newArray[index].number += dailyStat.number;
+          newArray[index].date = dailyStat.date; // Припускаючи, що дата однакова для всіх статистик і її треба встановити тільки один раз
+        });
+      }
+      adminStatistic.lastSevenDaysConversions = newArray;
+      await adminStatistic.save();
+      console.log('newArray', newArray);
+  
+    } catch (error) {
+      console.log(error);
+    }
+  };

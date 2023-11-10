@@ -225,6 +225,7 @@ export const handleCalculateNumbersStatisticsPartner = async () => {
 
       // Обчислення для кліків
       let allClicks = statistic.clicksAllPeriod || 0;
+      let allConversions = 0;
       let monthClicks = statistic.clicksMonth || 0;
 
       const yesterday = moment().subtract(1, "day").format("DD.MM.YYYY");
@@ -244,11 +245,15 @@ export const handleCalculateNumbersStatisticsPartner = async () => {
       allClicks += numberClicks;
       monthClicks += numberClicks;
 
+      if(allClicks && allBuys) {
+        allConversions = (allBuys / allClicks) * 100;
+      }
       // Оновлення статистики
       statistic.buysAllPeriod = allBuys;
       statistic.buysMonth = monthBuys;
       statistic.clicksAllPeriod = allClicks;
       statistic.clicksMonth = monthClicks;
+      statistic.conversionAllPeriod = allConversions;
 
       await statistic.save();
     }
@@ -476,3 +481,180 @@ export const createDefaultChartYear = async () => {
     await statistic.save();
   }
 };
+
+export const createDefaultChartAllYears = async () => {
+  const monthCurrentYears = Services.getAllPeriodArray();
+  const defaultArray = [];
+
+  monthCurrentYears.forEach((item) => {
+    defaultArray.push({
+      date: item,
+      number: 0,
+    });
+  });
+
+  const allPartner = (await UserModel.find()).splice(1);
+
+  for (const user of allPartner) {
+    if (!user._id) {
+      console.log("Партнер не знайдений для коду:", user._id);
+      continue;
+    }
+
+    const partnerId = user._id.toString();
+    const statistic = await PartnerStatisticModel.findOne({ partnerId });
+
+    if (!statistic) {
+      console.log("Статистика не знайдена для партнера:", partnerId);
+      continue;
+    }
+
+    statistic.chartsYearAllPeriod.clicks = defaultArray;
+    statistic.chartsYearAllPeriod.buys = defaultArray;
+    statistic.chartsYearAllPeriod.conversions = defaultArray;
+
+    await statistic.save();
+  }
+};
+
+export const createChartSevenDays = async () => {
+  try {
+    const allPartner = (await UserModel.find()).splice(1);
+    for (const user of allPartner) {
+      if (!user._id) {
+        console.log("Партнер не знайдений для коду:", user._id);
+        continue;
+      }
+
+      const partnerId = user._id.toString();
+      const statistic = await PartnerStatisticModel.findOne({ partnerId });
+
+      if (!statistic) {
+        console.log("Статистика не знайдена для партнера:", partnerId);
+        continue;
+      }
+      const clicksArray = [
+        {
+        date: '02.11.2023',
+        number: 100,
+        },
+        {
+        date: '03.11.2023',
+        number: 80,
+        },
+        {
+        date: '04.11.2023',
+        number: 90,
+        },
+        {
+        date: '05.11.2023',
+        number: 120,
+        },
+        {
+        date: '06.11.2023',
+        number: 110,
+        },
+        {
+        date: '07.11.2023',
+        number: 105,
+        },
+        {
+        date: '08.11.2023',
+        number: 70,
+        }
+    ];
+      const buysArray = [
+        {
+          date: '02.11.2023',
+          number: 10,
+          },
+          {
+          date: '03.11.2023',
+          number: 7,
+          },
+          {
+          date: '04.11.2023',
+          number: 6,
+          },
+          {
+          date: '05.11.2023',
+          number: 10,
+          },
+          {
+          date: '06.11.2023',
+          number: 11,
+          },
+          {
+          date: '07.11.2023',
+          number: 8,
+          },
+          {
+          date: '08.11.2023',
+          number: 4,
+          }
+      ];
+      const conversionsArray = [
+        {
+          date: '02.11.2023',
+          number: 1,
+          },
+          {
+          date: '03.11.2023',
+          number: 0.5,
+          },
+          {
+          date: '04.11.2023',
+          number: 1.5,
+          },
+          {
+          date: '05.11.2023',
+          number: 2,
+          },
+          {
+          date: '06.11.2023',
+          number: 12.3,
+          },
+          {
+          date: '07.11.2023',
+          number: 1.8,
+          },
+          {
+          date: '08.11.2023',
+          number: 1,
+          }
+      ];
+      // const lastSevenDays = statistic.event.slice(-7);
+      // console.log('lastSevenDays',lastSevenDays);
+      // lastSevenDays.forEach((item) => {
+      //   let iterationConversion = 0;
+      //   let iterationDate = item.date.split('.')[0];
+      //   clicksArray.push({
+      //     date: iterationDate,
+      //     number: item.clicks.length
+      //   })
+      //   buysArray.push({
+      //     date: iterationDate,
+      //     number: item.buys.length
+      //   })
+
+      //   if(item.buys.length && item.clicks.length) {
+      //     iterationConversion = (item.buys.length / item.clicks.length) * 100;
+      //   }
+      //   conversionsArray.push({
+      //     date: iterationDate,
+      //     number: iterationConversion
+      //   })
+      // })
+      statistic.lastSevenDays.clicks = clicksArray;
+      statistic.lastSevenDays.buys = buysArray;
+      statistic.lastSevenDays.conversions = conversionsArray;
+
+      console.log('clicksArray',clicksArray);
+      console.log('buysArray',buysArray);
+      console.log('conversionsArray',conversionsArray);
+      await statistic.save();
+    }
+  } catch(error) {
+    console.log(error);
+  }
+}

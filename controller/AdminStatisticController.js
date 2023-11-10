@@ -70,5 +70,5 @@ export const getAdminStatistic = async (req, res) => {
 }
 
 // setTimeout(() => {
-//   AdminStatisticService.calculateEventEveryDay();
+//   AdminStatisticService.createChartSevenDays();
 // },5000)

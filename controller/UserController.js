@@ -1,5 +1,6 @@
 import UserModel from '../model/User.js';
 import PartnerStatistic from '../model/PartnerStatistic.js';
+import * as Service from '../services/services.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import moment from 'moment-timezone';
@@ -25,7 +26,6 @@ export const createPartnerStatistic = async (userId) => {
   }
 }
 
-
 export const register = async (req, res) => {
     try {
       console.log('register');
@@ -38,22 +38,27 @@ export const register = async (req, res) => {
         if (canditate) {
           return res.status(500).json({ message: 'Email already exists' });
         }
-        const link = 'random';
-        const promotionalСode = 'random';
 
         const user = await UserModel.create({
             email,
             name,
-            link,
-            promotionalСode,
+            link: '',
+            promotionalCode: '',
             isAdmin: false,
             isPartner: true,
             disabled: false,
             password: hash,
         });
 
+        const link = Service.generateRandomLink(user._id);
+        const promotionalCode = Service.generateRandomPromoCode(user._id);
+
+        console.log('promotionalCode',promotionalCode);
+
         const statistics = await createPartnerStatistic(user._id);
         user.statistics = statistics._id;
+        user.link = link;
+        user.promotionalCode = promotionalCode;
         await user.save();
 
         // if(user) {
@@ -186,7 +191,7 @@ export const getMe = async (req, res) => {
       const limit = parseInt(req.query.limit) || 5;
   
       const skip = (page - 1) * limit;
-      const userData = await UserModel.find().skip(skip).limit(limit);
+      const userData = await UserModel.find().skip(skip).limit(limit).populate('statistics');
 
       console.log('userData',userData);
       res.json(userData.slice(1));
@@ -198,12 +203,33 @@ export const getMe = async (req, res) => {
     }
   };
 
+  // export const searchUsers = async (req, res) => {
+  //   try {
+  //     const { page = 1, limit = 2, search = '' } = req.query;
+  
+  //     const skip = (page - 1) * limit;
+  //     const query = search ? { name: new RegExp(search, 'i') } : {};
+  //     const users = await UserModel.find(query).skip(skip).limit(limit)
+  //     .populate('statistics')
+  
+  //     res.json(users);
+  //   } catch (error) {
+  //     console.log(error);
+  //     res.status(500).json({ message: 'Server error' });
+  //   }
+  // };
+
   export const searchUsers = async (req, res) => {
     try {
       const { page = 1, limit = 2, search = '' } = req.query;
   
       const skip = (page - 1) * limit;
-      const query = search ? { name: new RegExp(search, 'i') } : {};
+      // Виключення адміністраторів з результатів пошуку
+      const query = {
+        ...search ? { name: new RegExp(search, 'i') } : {},
+        isAdmin: { $ne: true } // Додаємо умову, щоб ігнорувати адміністраторів
+      };
+  
       const users = await UserModel.find(query).skip(skip).limit(limit)
       .populate('statistics')
   
@@ -213,6 +239,25 @@ export const getMe = async (req, res) => {
       res.status(500).json({ message: 'Server error' });
     }
   };
+  
+
+  // export const searchUsers = async (req, res) => {
+  //   try {
+  //     const { page = 1, limit = 2, search = '' } = req.query;
+  
+  //     // Завжди пропускаємо першого користувача (адміністратора) плюс враховуємо пагінацію
+  //     const skip = ((page - 1) * limit) + 1;
+  
+  //     const query = search ? { name: new RegExp(search, 'i') } : {};
+  //     const users = await UserModel.find(query).skip(skip).limit(limit)
+  //       .populate('statistics');
+  
+  //     res.json(users);
+  //   } catch (error) {
+  //     console.log(error);
+  //     res.status(500).json({ message: 'Server error' });
+  //   }
+  // };
 
   export const updateUserBalance = async (req, res) => {
     try {
@@ -281,3 +326,7 @@ export const getMe = async (req, res) => {
       });
     }
   }
+
+  // setTimeout(() => {
+  //   PartnerStatistic.generateRandomLink();
+  // },5000)

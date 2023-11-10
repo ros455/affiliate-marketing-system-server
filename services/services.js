@@ -1,5 +1,10 @@
 import moment from 'moment-timezone';
 
+function getRandomLetter() {
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+  return alphabet[Math.floor(Math.random() * alphabet.length)];
+}
+
 export const getMonthFromString = (dateString) => {
     // Розділіть рядок за допомогою точки
     var parts = dateString.split(".");
@@ -29,9 +34,45 @@ export const getMonthFromString = (dateString) => {
     return daysArray;
   };
 
-  export const getMonthArrayForYear= () => {
+  export const getMonthArrayForYear = () => {
   
     let yearArray = ['01','02','03','04','05','06','07','08','09','10','11','12'];
   
     return yearArray;
   };
+
+  export const getAllPeriodArray = () => {
+  
+    let yearArray = ['2023','2024','2025','2026','2027','2028','2029','2030'];
+  
+    return yearArray;
+  };
+
+  export const generateRandomLink = (id) => {
+    try {
+      const dateNow = Date.now().toString();
+      const randomString = Math.random().toString(36).substring(2, 15);
+      const uniqueString = `${randomString}-${id}-${dateNow}`;
+      return uniqueString;
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
+  export const generateRandomPromoCode = (id) => {
+    try {
+      console.log('id',id);
+      const partnerId = id.toString();
+      const dateNow = Date.now().toString();
+      const firstLetter = getRandomLetter();
+      const middleLetter = getRandomLetter();
+      const endLetter = getRandomLetter();
+      // const uniqueString = `${randomString}-${id}-${dateNow}`;
+      const uniqueString = `${firstLetter}${partnerId.slice(-3)}${middleLetter}${dateNow.slice(-3)}${endLetter}`;
+      console.log('uniqueString',uniqueString);
+      return uniqueString;
+    } catch(error) {
+      console.log(error);
+    }
+  }
+  

@@ -31,6 +31,30 @@ const partnerStatisticSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    conversionAllPeriod: {
+      type: Number,
+      default: 0,
+    },
+    lastSevenDays: {
+      buys: [
+        {
+          date: String,
+          number: Number,
+        },
+      ],
+      clicks: [
+        {
+          date: String,
+          number: Number,
+        },
+      ],
+      conversions: [
+        {
+          date: String,
+          number: Number,
+        },
+      ],
+    },
     chartsMonth: {
         buys: [
           {
