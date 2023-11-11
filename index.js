@@ -14,6 +14,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use('/UploadBig', express.static('UploadBig'));
+app.use('/UploadMiddle', express.static('UploadMiddle'));
+app.use('/UploadSmall', express.static('UploadSmall'));
+
 const kyivTime = moment().tz('Europe/Kiev');
 const formattedDate = kyivTime.format('DD.MM.YYYY');
 const startTime = moment(kyivTime).set({ hour: 1, minute: 0, second: 0 }).valueOf();

@@ -6,6 +6,7 @@ import moment from 'moment-timezone';
 import { CronJob } from 'cron';
 const kyivTime = moment().tz('Europe/Kiev');
 const formattedDate = kyivTime.format('DD.MM.YYYY');
+const currentYear = kyivTime.format("YYYY");
 
 // Обчислюємо массив event на основі данних всіх партнерів
 export const calculateEventEveryDay = async () => {
@@ -17,10 +18,18 @@ export const calculateEventEveryDay = async () => {
         let eventClicks = 0;
         let eventBuys = 0;
 
+        if(!allStatistic) {
+          return;
+        }
+
         for (const oneStat of allStatistic) {
           const yesterdayEvent = oneStat.event.filter(
             (item) => item.date == yesterday
           );
+          if (!yesterdayEvent.length) {
+            console.log("Статистика не знайдена для користувача",oneStat._id);
+            continue;
+          }
             console.log('yesterdayEvent',yesterdayEvent);
             const lastEventItem = yesterdayEvent[0];
             eventDate = lastEventItem.date;
@@ -48,20 +57,26 @@ export const calculateNumbersEveryDay = async () => {
         let clickAllPeriod = 0;
         let buyAllPeriod = 0;
         let allConversions = 0;
+
+        if(!allStatistic) {
+          return;
+        }
+
+
         for (const oneStat of allStatistic) {
             clickMonth += oneStat.clicksMonth;
             buyMonth += oneStat.buysMonth;
             clickAllPeriod += oneStat.clicksAllPeriod;
             buyAllPeriod += oneStat.buysAllPeriod;
         }
-        if(allClicks && allBuys) {
-          allConversions = (allBuys / allClicks) * 100;
+        if(clickAllPeriod && buyAllPeriod) {
+          allConversions = (buyAllPeriod / clickAllPeriod) * 100;
         }
         adminStatistic.buysMonth = buyMonth;
         adminStatistic.clicksMonth = clickMonth;
         adminStatistic.clicksAllPeriod = clickAllPeriod;
         adminStatistic.buysAllPeriod = buyAllPeriod;
-        adminStatistic.conversionAllPeriod = allConversions;
+        adminStatistic.conversionAllPeriod = allConversions.toFixed(1);
 
         await adminStatistic.save();
     } catch(error) {
@@ -69,12 +84,110 @@ export const calculateNumbersEveryDay = async () => {
     }
 }
 
-// Обчислюємо місячний графік
+// Очищення місячних числових значень
+export const clearMonthDataAdmin = async () => {
+  try {
+    const allStatistic = await PartnerStatisticModel.find();
+    console.log("allPartner", allPartner);
+
+      if (!allStatistic) {
+        console.log("Партнер не знайдений для коду:", user._id);
+      }
+
+      allStatistic.buysMonth = 0;
+      allStatistic.clicksMonth = 0;
+      await allStatistic.save();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// Створюємо місячний графік
+
+export const createDefaultChartMonth = async () => {
+    const daysOfCurrentMonth = Services.getDaysArrayForCurrentMonth();
+    const defaultArray = [];
+    daysOfCurrentMonth.forEach((item) => {
+      defaultArray.push({
+        date: item,
+        number: 0,
+      })
+    })
+    const adminStatistic = await AdminStatisticModel.findOne();
+    
+      if (!adminStatistic) {
+        console.log('Статистика не знайдена');
+      }
+
+      console.log('adminStatistic',adminStatistic);
+      console.log('defaultArray',defaultArray);
+
+      adminStatistic.chartsMonth.clicks = defaultArray;
+      adminStatistic.chartsMonth.buys = defaultArray;
+      adminStatistic.chartsMonth.conversions = defaultArray;
+      await adminStatistic.save();
+  }
+
+  // Створюємо річний графік
+
+  export const createDefaultChartYear = async () => {
+    const monthCurrentYears = Services.getMonthArrayForYear();
+    const defaultArray = [];
+
+    monthCurrentYears.forEach((item) => {
+      defaultArray.push({
+        date: item,
+        number: 0,
+      })
+    })
+
+    const statistic = await AdminStatisticModel.findOne();
+
+      if (!statistic) {
+        console.log('Статистика не знайдена');
+      }
+
+      statistic.chartsYear.clicks = defaultArray;
+      statistic.chartsYear.buys = defaultArray;
+      statistic.chartsYear.conversions = defaultArray;
+
+      await statistic.save();
+  }
+
+    // Створюємо графік за весь період
+
+  export const createDefaultChartAllPeriod = async () => {
+    const monthCurrentYears = Services.getAllPeriodArray();
+    const defaultArray = [];
+
+    monthCurrentYears.forEach((item) => {
+      defaultArray.push({
+        date: item,
+        number: 0,
+      })
+    })
+
+    const statistic = await AdminStatisticModel.findOne();
+
+      if (!statistic) {
+        console.log('Статистика не знайдена');
+      }
+
+      statistic.chartsYearAllPeriod.clicks = defaultArray;
+      statistic.chartsYearAllPeriod.buys = defaultArray;
+      statistic.chartsYearAllPeriod.conversions = defaultArray;
+
+      await statistic.save();
+  }
+
+  // Обчислюємо місячний графік
 export const calculateChartMonth = async () => {
   try {
     const allStatistic = await PartnerStatisticModel.find();
     const adminStatistic = await AdminStatisticModel.findOne();
-    const yesterday = moment().subtract(1, "day").format("DD.MM.YYYY");
+    const yesterdayFull = moment().subtract(1, "day").format("DD.MM.YYYY");
+    const yesterday = yesterdayFull.split('.')[0];
+
     let buysNumber = 0;
     let clicksNumber = 0;
     let conversionsNumber = 0;
@@ -96,10 +209,15 @@ export const calculateChartMonth = async () => {
       const yesterdayBuyEvent = oneStat.chartsMonth.buys.filter(
         (item) => item.date == yesterday
       );
+      console.log('yesterdayClickEvent',yesterdayClickEvent);
+      console.log('yesterdayBuyEvent',yesterdayBuyEvent);
       // const yesterdayConversionEvent = oneStat.chartsMonth.conversions.filter((item) => item.date == yesterday);
       buysNumber += yesterdayBuyEvent[0].number;
       clicksNumber += yesterdayClickEvent[0].number;
     }
+    console.log('adminChartYesterdayClickObject',adminChartYesterdayClickObject);
+    console.log('adminChartYesterdayBuyObject',adminChartYesterdayBuyObject);
+    console.log('adminChartYesterdayConversionObject',adminChartYesterdayConversionObject);
     if (buysNumber && clicksNumber) {
       conversionsNumber = (buysNumber / clicksNumber) * 100;
     }
@@ -110,7 +228,7 @@ export const calculateChartMonth = async () => {
       adminChartYesterdayBuyObject[0].number = buysNumber;
     }
     if (adminChartYesterdayConversionObject) {
-      adminChartYesterdayConversionObject[0].number = conversionsNumber;
+      adminChartYesterdayConversionObject[0].number = conversionsNumber.toFixed(1);
     }
     await adminStatistic.save();
   } catch (error) {
@@ -149,7 +267,7 @@ export const calculateChartYear = async () => {
 
         adminStatistic.chartsYear.conversions.push({
             date: formattedDate,
-            number: conversionsNumber
+            number: conversionsNumber.toFixed(1)
           })
           console.log('buysNumber',buysNumber);
           console.log('clicksNumber',clicksNumber);
@@ -160,94 +278,41 @@ export const calculateChartYear = async () => {
     }
 }
 
-export const clearMonthDataAdmin = async () => {
+// Обчислюємо графік за весь період
+
+export const calculateChartAllYears = async () => {
   try {
     const allStatistic = await PartnerStatisticModel.find();
-    console.log("allPartner", allPartner);
+    const adminStatistic = await AdminStatisticModel.findOne();
+    let buysNumber = 0;
+    let clicksNumber = 0;
+    let conversionsNumber = 0;
+    const actualIndexForAdminChart = adminStatistic.chartsYearAllPeriod.buys.findIndex((item) => item.date == currentYear);
 
-      if (!allStatistic) {
-        console.log("Партнер не знайдений для коду:", user._id);
-      }
+    for (const oneStat of allStatistic) {
+      const actualIndexForChart = oneStat.chartsYearAllPeriod.buys.findIndex((item) => item.date == currentYear);
 
-      allStatistic.buysMonth = 0;
-      allStatistic.clicksMonth = 0;
-      await allStatistic.save();
-  } catch (error) {
-    console.log(error);
+      buysNumber += oneStat.chartsYearAllPeriod.buys[actualIndexForChart].number;
+      clicksNumber += oneStat.chartsYearAllPeriod.clicks[actualIndexForChart].number;
+      console.log('actualIndexForChart',actualIndexForChart);
+    }
+    console.log('buysNumber',buysNumber);
+    console.log('clicksNumber',clicksNumber);
+
+    if(clicksNumber && buysNumber) {
+      conversionsNumber = (buysNumber / clicksNumber) * 100;
+    }
+    adminStatistic.chartsYearAllPeriod.buys[actualIndexForAdminChart].number = buysNumber;
+    adminStatistic.chartsYearAllPeriod.clicks[actualIndexForAdminChart].number = clicksNumber;
+    adminStatistic.chartsYearAllPeriod.conversions[actualIndexForAdminChart].number = conversionsNumber.toFixed(1);
+
+    await adminStatistic.save();
+  } catch(error) {
+    console.log('error',error);
   }
 };
 
-export const createDefaultChartMonth = async () => {
-    const daysOfCurrentMonth = Services.getDaysArrayForCurrentMonth();
-    const defaultArray = [];
-    daysOfCurrentMonth.forEach((item) => {
-      defaultArray.push({
-        date: item,
-        number: 0,
-      })
-    })
-    const adminStatistic = await AdminStatisticModel.findOne();
-    
-      if (!adminStatistic) {
-        console.log('Статистика не знайдена');
-      }
-
-      console.log('adminStatistic',adminStatistic);
-      console.log('defaultArray',defaultArray);
-
-      adminStatistic.chartsMonth.clicks = defaultArray;
-      adminStatistic.chartsMonth.buys = defaultArray;
-      adminStatistic.chartsMonth.conversions = defaultArray;
-      await adminStatistic.save();
-  }
-
-  export const createDefaultChartYear = async () => {
-    const monthCurrentYears = Services.getMonthArrayForYear();
-    const defaultArray = [];
-
-    monthCurrentYears.forEach((item) => {
-      defaultArray.push({
-        date: item,
-        number: 0,
-      })
-    })
-
-    const statistic = await AdminStatisticModel.findOne();
-
-      if (!statistic) {
-        console.log('Статистика не знайдена');
-      }
-
-      statistic.chartsYear.clicks = defaultArray;
-      statistic.chartsYear.buys = defaultArray;
-      statistic.chartsYear.conversions = defaultArray;
-
-      await statistic.save();
-  }
-
-  export const createDefaultChartAllPeriod = async () => {
-    const monthCurrentYears = Services.getAllPeriodArray();
-    const defaultArray = [];
-
-    monthCurrentYears.forEach((item) => {
-      defaultArray.push({
-        date: item,
-        number: 0,
-      })
-    })
-
-    const statistic = await AdminStatisticModel.findOne();
-
-      if (!statistic) {
-        console.log('Статистика не знайдена');
-      }
-
-      statistic.chartsYearAllPeriod.clicks = defaultArray;
-      statistic.chartsYearAllPeriod.buys = defaultArray;
-      statistic.chartsYearAllPeriod.conversions = defaultArray;
-
-      await statistic.save();
-  }
+      // Створюємо 7 денний графік
 
   export const createChartSevenDays = async () => {
     try {

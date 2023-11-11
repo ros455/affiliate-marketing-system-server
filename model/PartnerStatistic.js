@@ -10,6 +10,7 @@ const partnerStatisticSchema = new mongoose.Schema(
         buys: [
           {
             date: String,
+            value: Number,
             buyId: String
           }
         ],

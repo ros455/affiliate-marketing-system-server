@@ -1,6 +1,7 @@
 import UserModel from '../model/User.js';
 import PartnerStatistic from '../model/PartnerStatistic.js';
 import * as Service from '../services/services.js';
+import * as ParthnerStatisticService from '../services/ParthnerStatisticService.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import moment from 'moment-timezone';
@@ -9,7 +10,6 @@ const formattedDate = kyivTime.format('DD.MM.YYYY');
 
 export const createPartnerStatistic = async (userId) => {
   try {
-    console.log('createPartnerStatistic');
     const statistics = await PartnerStatistic.create({
       partnerId: userId,
       event: [
@@ -20,6 +20,10 @@ export const createPartnerStatistic = async (userId) => {
         }
       ],
     });
+    await ParthnerStatisticService.createDefaultChartMonthOnePartner(statistics._id)
+    await ParthnerStatisticService.createDefaultChartYearOnePartner(statistics._id)
+    await ParthnerStatisticService.createDefaultChartAllYearsOnePartner(statistics._id)
+    await ParthnerStatisticService.createChartSevenDaysOnePartner(statistics._id)
     return statistics;
   } catch(error) {
     console.error('Помилка при створенні статистики:', error);
@@ -122,6 +126,7 @@ export const login = async (req, res) => {
 
 export const getMe = async (req, res) => {
     try {
+      console.log('work');
       const user = await UserModel.findById(req.userId)
       .populate('statistics');
   
@@ -140,7 +145,6 @@ export const getMe = async (req, res) => {
       });
     }
   }
-  
 
   export const updateData = async (req, res) => {
     try {
@@ -172,8 +176,6 @@ export const getMe = async (req, res) => {
       });
     }
   }
-
-  // export const getAllUsers = async (req, res) => {
   //   try {
   //     const userData = await UserModel.find()
   //     res.json(userData);
@@ -203,22 +205,6 @@ export const getMe = async (req, res) => {
     }
   };
 
-  // export const searchUsers = async (req, res) => {
-  //   try {
-  //     const { page = 1, limit = 2, search = '' } = req.query;
-  
-  //     const skip = (page - 1) * limit;
-  //     const query = search ? { name: new RegExp(search, 'i') } : {};
-  //     const users = await UserModel.find(query).skip(skip).limit(limit)
-  //     .populate('statistics')
-  
-  //     res.json(users);
-  //   } catch (error) {
-  //     console.log(error);
-  //     res.status(500).json({ message: 'Server error' });
-  //   }
-  // };
-
   export const searchUsers = async (req, res) => {
     try {
       const { page = 1, limit = 2, search = '' } = req.query;
@@ -239,9 +225,6 @@ export const getMe = async (req, res) => {
       res.status(500).json({ message: 'Server error' });
     }
   };
-  
-
-  // export const searchUsers = async (req, res) => {
   //   try {
   //     const { page = 1, limit = 2, search = '' } = req.query;
   
@@ -295,8 +278,9 @@ export const getMe = async (req, res) => {
 
   export const updateUserLink = async (req, res) => {
     try {
-      const {id, newLink} = req.body;
+      const {id} = req.body;
       const user = await UserModel.findById(id);
+      const newLink = Service.generateRandomLink(id);
       user.link = newLink;
 
       await user.save();
@@ -312,8 +296,9 @@ export const getMe = async (req, res) => {
 
   export const updateUserPromotionalCode = async (req, res) => {
     try {
-      const {id, newCode} = req.body;
+      const {id} = req.body;
       const user = await UserModel.findById(id);
+      const newCode = Service.generateRandomPromoCode(id);
       user.promotionalCode = newCode;
 
       await user.save();

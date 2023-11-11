@@ -76,3 +76,21 @@ export const getMonthFromString = (dateString) => {
     }
   }
   
+  export const getLastSevenDays = () => {
+    // Встановлення часового поясу "Europe/Kiev"
+    moment.tz.setDefault('Europe/Kiev');
+  
+    let daysArray = [];
+    
+    // Визначення вчорашнього дня
+    let day = moment().subtract(1, 'days');
+  
+    // Додавання останніх 7 днів до масиву
+    for (let i = 0; i < 7; i++) {
+      daysArray.unshift(day.format('DD'));
+      day = day.subtract(1, 'days');
+    }
+  
+    console.log('daysArray', daysArray);
+    return daysArray;
+  };
