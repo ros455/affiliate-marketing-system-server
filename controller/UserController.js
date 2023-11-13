@@ -1,10 +1,13 @@
 import UserModel from '../model/User.js';
+import ImageStoreModel from '../model/ImageStorage.js';
 import PartnerStatistic from '../model/PartnerStatistic.js';
 import * as Service from '../services/services.js';
 import * as ParthnerStatisticService from '../services/ParthnerStatisticService.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import moment from 'moment-timezone';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 const kyivTime = moment().tz('Europe/Kiev');
 const formattedDate = kyivTime.format('DD.MM.YYYY');
 
@@ -156,6 +159,12 @@ export const getMe = async (req, res) => {
         return res.status(404).json({ message: 'User not found' });
       }
 
+      const candidate = await UserModel.findOne({ email });
+
+      if (candidate && candidate._id != id) {
+        return res.status(500).json({ message: 'Email already exists' });
+      }
+
       if(password) {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
@@ -176,16 +185,6 @@ export const getMe = async (req, res) => {
       });
     }
   }
-  //   try {
-  //     const userData = await UserModel.find()
-  //     res.json(userData);
-  //   } catch(error) {
-  //     console.log(error);
-  //     res.status(500).json({
-  //       message: 'Access denied'
-  //     });
-  //   }
-  // };
 
   export const getAllUsers = async (req, res) => {
     try {
@@ -225,22 +224,6 @@ export const getMe = async (req, res) => {
       res.status(500).json({ message: 'Server error' });
     }
   };
-  //   try {
-  //     const { page = 1, limit = 2, search = '' } = req.query;
-  
-  //     // Завжди пропускаємо першого користувача (адміністратора) плюс враховуємо пагінацію
-  //     const skip = ((page - 1) * limit) + 1;
-  
-  //     const query = search ? { name: new RegExp(search, 'i') } : {};
-  //     const users = await UserModel.find(query).skip(skip).limit(limit)
-  //       .populate('statistics');
-  
-  //     res.json(users);
-  //   } catch (error) {
-  //     console.log(error);
-  //     res.status(500).json({ message: 'Server error' });
-  //   }
-  // };
 
   export const updateUserBalance = async (req, res) => {
     try {
@@ -308,6 +291,110 @@ export const getMe = async (req, res) => {
       console.log(error);
       res.status(500).json({
         message: 'Access denied'
+      });
+    }
+  }
+
+  export const dowloadBigBaner = async (req, res) => {
+    try {
+      const imageStore = await ImageStoreModel.findOne();
+
+      const __filename = fileURLToPath(import.meta.url);
+      console.log('__filename',__filename);
+
+      const __dirname = dirname(__filename);
+
+      console.log('__dirname',__dirname);
+  
+  
+      const filePath = path.join(__dirname, "..", imageStore.BigBanner); // Отримайте шлях до файлу
+
+      console.log('filePath',filePath);
+
+      if (filePath) {
+        return res.download(filePath);
+      }
+      return res.status(400).json({ message: "Dowload error" });
+
+    } catch(error) {
+      console.log(error);
+      res.status(400).json({
+        message: 'Dowload Error'
+      });
+    }
+  }
+  export const dowloadMiddleBaner = async (req, res) => {
+    try {
+      const imageStore = await ImageStoreModel.findOne();
+
+      const __filename = fileURLToPath(import.meta.url);
+      console.log('__filename',__filename);
+
+      const __dirname = dirname(__filename);
+
+      console.log('__dirname',__dirname);
+  
+  
+      const filePath = path.join(__dirname, "..", imageStore.MiddleBanner); // Отримайте шлях до файлу
+
+      console.log('filePath',filePath);
+
+      if (filePath) {
+        return res.download(filePath);
+      }
+      return res.status(400).json({ message: "Dowload error" });
+
+    } catch(error) {
+      console.log(error);
+      res.status(400).json({
+        message: 'Dowload Error'
+      });
+    }
+  }
+  export const dowloadSmallBaner = async (req, res) => {
+    try {
+      const imageStore = await ImageStoreModel.findOne();
+
+      const __filename = fileURLToPath(import.meta.url);
+      console.log('__filename',__filename);
+
+      const __dirname = dirname(__filename);
+
+      console.log('__dirname',__dirname);
+  
+  
+      const filePath = path.join(__dirname, "..", imageStore.SmallBanner); // Отримайте шлях до файлу
+
+      console.log('filePath',filePath);
+
+      if (filePath) {
+        return res.download(filePath);
+      }
+      return res.status(400).json({ message: "Dowload error" });
+
+    } catch(error) {
+      console.log(error);
+      res.status(400).json({
+        message: 'Dowload Error'
+      });
+    }
+  }
+
+  export const getAllBanners = async (req, res) => {
+    try {
+      const imageStorege = await ImageStoreModel.findOne();
+
+      if(!imageStorege) {
+        res.status(404).json({
+          message: 'Files not found'
+        });
+      }
+
+      res.json(imageStorege);
+    } catch(error) {
+      console.log(error);
+      res.status(404).json({
+        message: 'Files not found'
       });
     }
   }

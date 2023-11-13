@@ -1,5 +1,6 @@
 import AdminStatisticModel from "../model/AdminStatistic.js";
 import ImageStorageModel from "../model/ImageStorage.js";
+import UserModel from '../model/User.js';
 import * as AdminStatisticService from '../services/AdminStatisticService.js';
 
 import { CronJob } from 'cron';
@@ -89,6 +90,11 @@ export const createImageStorage = async (req, res) => {
 export const UploadBigBaner = async (req, res) => {
   try {
     const storege = await ImageStorageModel.findOne();
+
+    storege.BigBanner = `/uploads/${req.file.originalname}`;
+
+    await storege.save();
+    res.json(storege);
   }catch(error) {
     console.log(error);
     res.status(500).json({
@@ -100,6 +106,11 @@ export const UploadBigBaner = async (req, res) => {
 export const UploadMiddleBaner = async (req, res) => {
   try {
     const storege = await ImageStorageModel.findOne();
+
+    storege.MiddleBanner = `/uploads/${req.file.originalname}`;
+
+    await storege.save();
+    res.json(storege);
   }catch(error) {
     console.log(error);
     res.status(500).json({
@@ -111,10 +122,28 @@ export const UploadMiddleBaner = async (req, res) => {
 export const UploadSmallBaner = async (req, res) => {
   try {
     const storege = await ImageStorageModel.findOne();
+
+    storege.SmallBanner = `/uploads/${req.file.originalname}`;
+
+    await storege.save();
+    res.json(storege);
   }catch(error) {
     console.log(error);
     res.status(500).json({
         message: 'Upload Error'
+      });
+  }
+}
+
+export const getOneUserForAdmin = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const user = await UserModel.findById(id).populate('statistics');
+    res.json(user);
+  } catch(error) {
+    console.log(error);
+    res.status(404).json({
+        message: 'User not found'
       });
   }
 }

@@ -13,10 +13,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-app.use('/UploadBig', express.static('UploadBig'));
-app.use('/UploadMiddle', express.static('UploadMiddle'));
-app.use('/UploadSmall', express.static('UploadSmall'));
+app.use('/api/uploads', express.static('uploads'));
 
 const kyivTime = moment().tz('Europe/Kiev');
 const formattedDate = kyivTime.format('DD.MM.YYYY');

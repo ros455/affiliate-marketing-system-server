@@ -15,4 +15,8 @@ router.patch('/update-user-balance',UsersController.updateUserBalance);
 router.patch('/update-user-bonus',UsersController.updateUserBonuse);
 router.patch('/update-user-link',UsersController.updateUserLink);
 router.patch('/update-user-promo-code',UsersController.updateUserPromotionalCode);
+router.get('/download-big-banner',UsersController.dowloadBigBaner);
+router.get('/download-middle-banner',UsersController.dowloadMiddleBaner);
+router.get('/download-small-banner',UsersController.dowloadSmallBaner);
+router.get('/get-all-banners',UsersController.getAllBanners);
 export default router;

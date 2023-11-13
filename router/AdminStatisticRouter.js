@@ -6,7 +6,7 @@ import fs from "fs"
 
 const router = new Router();
 
-const storageBig = multer.diskStorage({
+const storage = multer.diskStorage({
     destination: (_,__,cd) => {
         if(!fs.existsSync('uploads')) {
             fs.mkdirSync('uploads');
@@ -18,39 +18,14 @@ const storageBig = multer.diskStorage({
     },
 })
 
-const storageMiddle = multer.diskStorage({
-    destination: (_,__,cd) => {
-        if(!fs.existsSync('uploads')) {
-            fs.mkdirSync('uploads');
-        }
-        cd(null,'uploads')
-    },
-    filename: (_,file,cd) => {
-        cd(null, file.originalname)
-    },
-})
-
-const storageSmall = multer.diskStorage({
-    destination: (_,__,cd) => {
-        if(!fs.existsSync('uploads')) {
-            fs.mkdirSync('uploads');
-        }
-        cd(null,'uploads')
-    },
-    filename: (_,file,cd) => {
-        cd(null, file.originalname)
-    },
-})
-
-const uploadBig = multer({storageBig})
-const uploadMiddle = multer({storageMiddle})
-const uploadSmall = multer({storageSmall})
+const uploads = multer({storage})
 
 router.post('/create-admin-statistic',AdminStatisticController.createAdminStatistic);
 router.get('/get-admin-statistic',checkAdmin,AdminStatisticController.getAdminStatistic);
+router.get('/get-user-statistic/:id',checkAdmin,AdminStatisticController.getOneUserForAdmin);
 router.post('/create-image-storage',AdminStatisticController.createImageStorage);
-router.post('/upload-big-baner',uploadBig.single('BigBanner'),AdminStatisticController.UploadBigBaner);
-router.post('/upload-middle-baner',uploadMiddle.single('MiddleBanner'),AdminStatisticController.UploadMiddleBaner);
-router.post('/upload-small-baner',uploadSmall.single('SmallBanner'),AdminStatisticController.UploadSmallBaner);
+router.patch('/upload-big-baner',uploads.single('BigBanner'),AdminStatisticController.UploadBigBaner);
+router.patch('/upload-middle-baner',uploads.single('MiddleBanner'),AdminStatisticController.UploadMiddleBaner);
+router.patch('/upload-small-baner',uploads.single('SmallBanner'),AdminStatisticController.UploadSmallBaner);
 
 export default router;
