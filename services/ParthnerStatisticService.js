@@ -7,227 +7,78 @@ const kyivTime = moment().tz("Europe/Kiev");
 const formattedDate = kyivTime.format("DD.MM.YYYY");
 const currentYear = kyivTime.format("YYYY");
 
-// const codes = [
-//   {
-//     codesId: "100",
-//     date: "10.11.2023",
-//     value: 10,
-//     code: "e27bh529l",
-//   },
-//   {
-//     codesId: "101",
-//     date: "10.11.2023",
-//     value: 10,
-//     code: "t282w406b",
-//   },
-//   {
-//     codesId: "102",
-//     date: "10.11.2023",
-//     value: 10,
-//     code: "e27bh529l",
-//   },
-//   {
-//     codesId: "103",
-//     date: "10.11.2023",
-//     value: 10,
-//     code: "t282w406b",
-//   },
-//   {
-//     codesId: "104",
-//     date: "10.11.2023",
-//     value: 10,
-//     code: "e27bh529l",
-//   },
-//   {
-//     codesId: "105",
-//     date: "10.11.2023",
-//     value: 10,
-//     code: "t282w406b",
-//   },
-//   {
-//     codesId: "106",
-//     date: "10.11.2023",
-//     value: 10,
-//     code: "e27bh529l",
-//   },
-//   {
-//     codesId: "107",
-//     date: "10.11.2023",
-//     value: 10,
-//     code: "t282w406b",
-//   },
-//   {
-//     codesId: "108",
-//     date: "10.11.2023",
-//     value: 10,
-//     code: "e27bh529l",
-//   },
-//   {
-//     codesId: "109",
-//     date: "10.11.2023",
-//     value: 10,
-//     code: "t282w406b",
-//   },
-//   {
-//     codesId: "110",
-//     date: "05.11.2023",
-//     value: 10,
-//     code: "e27bh529l",
-//   },
-//   {
-//     codesId: "111",
-//     date: "05.11.2023",
-//     value: 10,
-//     code: "t282w406b",
-//   },
-//   {
-//     codesId: "112",
-//     date: "06.11.2023",
-//     value: 10,
-//     code: "e27bh529l",
-//   },
-//   {
-//     codesId: "113",
-//     date: "06.11.2023",
-//     value: 10,
-//     code: "t282w406b",
-//   },
-//   {
-//     codesId: "114",
-//     date: "06.11.2023",
-//     value: 10,
-//     code: "e27bh529l",
-//   },
-//   {
-//     codesId: "115",
-//     date: "06.11.2023",
-//     value: 10,
-//     code: "t282w406b",
-//   },
-//   {
-//     codesId: "116",
-//     date: "07.11.2023",
-//     value: 10,
-//     code: "e27bh529l",
-//   },
-//   {
-//     codesId: "117",
-//     date: "07.11.2023",
-//     value: 10,
-//     code: "t282w406b",
-//   },
-//   {
-//     codesId: "118",
-//     date: "10.11.2023",
-//     value: 10,
-//     code: "e27bh529l",
-//   },
-//   {
-//     codesId: "119",
-//     date: "10.11.2023",
-//     value: 10,
-//     code: "t282w406b",
-//   },
-//   {
-//     codesId: "120",
-//     date: "10.11.2023",
-//     value: 10,
-//     code: "e27bh529l",
-//   },
-//   {
-//     codesId: "121",
-//     date: "10.11.2023",
-//     value: 10,
-//     code: "t282w406b",
-//   },
-// ];
 const codes = [
   {
-    codesId: "200",
-    date: "10.11.2023",
+    codesId: "0",
+    date: "07.11.2023",
     value: 10,
-    code: "l6f2t722e",
+    code: "nb6bu411p",
   },
   {
-    codesId: "201",
+    codesId: "1",
+    date: "07.11.2023",
+    value: 10,
+    code: "nb6bu411p",
+  },
+  {
+    codesId: "2",
+    date: "08.11.2023",
+    value: 10,
+    code: "nb6bu411p",
+  },
+  {
+    codesId: "3",
+    date: "09.11.2023",
+    value: 10,
+    code: "nb6bu411p",
+  },
+  {
+    codesId: "4",
     date: "10.11.2023",
     value: 10,
-    code: "l6f2t722e",
+    code: "nb6bu411p",
+  },
+  {
+    codesId: "5",
+    date: "10.11.2023",
+    value: 10,
+    code: "nb6bu411p",
+  },
+  {
+    codesId: "6",
+    date: "11.11.2023",
+    value: 10,
+    code: "nb6bu411p",
+  },
+  {
+    codesId: "7",
+    date: "12.11.2023",
+    value: 10,
+    code: "nb6bu411p",
+  },
+  {
+    codesId: "8",
+    date: "13.11.2023",
+    value: 10,
+    code: "nb6bu411p",
+  },
+  {
+    codesId: "9",
+    date: "13.11.2023",
+    value: 10,
+    code: "nb6bu411p",
+  },
+  {
+    codesId: "10",
+    date: "14.11.2023",
+    value: 10,
+    code: "nb6bu411p",
   },
 ];
-// Імітація заповнення покупок на основі отриманих данних
-// export const handleBuy = async () => {
-//   try {
-//     for (const item of codes) {
-//       const partner = await UserModel.findOne({ promotionalCode: item.code });
-//       console.log("partner", partner);
-//       if (!partner) {
-//         console.log("Партнер не знайдений для коду:", item.code);
-//         continue;
-//       }
-
-//       const partnerId = partner._id;
-//       const statistic = await PartnerStatisticModel.findOne({ partnerId });
-
-//       if (!statistic) {
-//         console.log("Статистика не знайдена для партнера:", partnerId);
-//         continue;
-//       }
-
-//       // const uniqueArrayId = [];
-
-//       // statistic.event.forEach((parent) => {
-//       //   parent.buys.forEach((child) => {
-//       //     uniqueArrayId.push(child.buyId);
-//       //   });
-//       // });
-
-//       const uniqueArrayId = [
-//         ...new Set(statistic.event.flatMap(parent => parent.buys.map(child => child.buyId)))
-//       ];
-
-//       const yesterday = moment().subtract(1, "day").format("DD.MM.YYYY");
-//       const yesterdayEvent = statistic.event.filter(
-//         (item) => item.date == yesterday
-//       );
-
-//       const lastIndex = statistic.event.length - 1;
-//       const lastDateToArray = yesterdayEvent[0].date;
-//       console.log('yesterdayEvent',yesterdayEvent);
-//       const format = "DD.MM.YYYY";
-//       const date1 = moment(lastDateToArray, format);
-//       const date2 = moment(formattedDate, format);
-//       if (date1.isBefore(date2)) {
-//         if (!uniqueArrayId.includes(item.codesId)) {
-//           statistic.event.push({
-//             date: formattedDate,
-//             clicks: [],
-//             buys: [
-//               {
-//                 date: formattedDate,
-//                 buyId: item.codesId,
-//               },
-//             ],
-//           });
-//           await statistic.save();
-//         }
-//       } else {
-//         if (!uniqueArrayId.includes(item.codesId)) {
-//           statistic.event[lastIndex].buys.push({
-//             date: formattedDate,
-//             buyId: item.codesId,
-//           });
-//           // await statistic.save();
-//         }
-//       }
-//     }
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
 
 export const handleBuy = async () => {
   try {
+    console.log('handleBuy',handleBuy);
     for (const item of codes) {
       const partner = await UserModel.findOne({ promotionalCode: item.code });
       if (!partner) {
@@ -248,7 +99,6 @@ export const handleBuy = async () => {
       ];
 
       const yesterday = moment().subtract(1, "day").format("DD.MM.YYYY");
-      // const yesterday = '05.11.2023';
       const yesterdayEvent = statistic.event.filter(
         (item) => item.date == yesterday
       );
@@ -295,6 +145,7 @@ export const handleBuy = async () => {
 
 export const handleCalculateNumbersStatisticsPartner = async () => {
   try {
+    console.log('handleCalculateNumbersStatisticsPartner',handleCalculateNumbersStatisticsPartner);
     const allPartners = (await UserModel.find()).splice(1); // Видалив .splice(1), щоб не пропускати першого користувача.
 
     for (const user of allPartners) {
@@ -424,6 +275,7 @@ export const createDefaultChartMonth = async () => {
 
 export const fillingCartMonth = async () => {
   try {
+    console.log('fillingCartMonth',fillingCartMonth);
     // Встановіть часовий пояс на Київ
     moment.tz.setDefault("Europe/Kiev");
 
@@ -687,7 +539,7 @@ export const calculateChartAllYears = async () => {
 // Наповнення 7 денного графіка
 
 export const createChartSevenDays = async () => {
-  try {
+  try {console.log('createChartSevenDays',createChartSevenDays);
     const allPartner = (await UserModel.find()).splice(1);
     for (const user of allPartner) {
       if (!user._id) {
@@ -715,10 +567,29 @@ export const createChartSevenDays = async () => {
 
       if(lastSevenDays.length != 7) {
         console.log("Статистики недостатньо");
+        const lastEvent = statistic.event;
+        const chartLastSevenDays = statistic.lastSevenDays;
+
+        chartLastSevenDays.clicks.forEach((item,index) => {
+          lastEvent.forEach((event) => {
+            if(event.date.split('.')[0] == item.date) {
+              console.log('Find');
+              chartLastSevenDays.buys[index].number = event.buys.length;
+              chartLastSevenDays.clicks[index].number = event.clicks.length;
+              chartLastSevenDays.conversions[index].number = (event.buys.length / event.clicks.length) * 100;
+            }
+          })
+        })
+  
+        console.log('chartLastSevenDays',chartLastSevenDays);
+        statistic.lastSevenDays.buys = chartLastSevenDays.buys;
+        statistic.lastSevenDays.clicks = chartLastSevenDays.clicks;
+        statistic.lastSevenDays.conversions = chartLastSevenDays.conversions;
+        console.log('chartLastSevenDays',chartLastSevenDays);
+        await statistic.save();
         continue;
       }
       
-      console.log('lastSevenDays',lastSevenDays);
       lastSevenDays.forEach((item) => {
         let iterationConversion = 0;
         let iterationDate = item.date.split('.')[0];
@@ -734,11 +605,13 @@ export const createChartSevenDays = async () => {
         if(item.buys.length && item.clicks.length) {
           iterationConversion = (item.buys.length / item.clicks.length) * 100;
         }
+
         conversionsArray.push({
           date: iterationDate,
           number: iterationConversion.toFixed(1)
         })
       })
+
       statistic.lastSevenDays.clicks = clicksArray;
       statistic.lastSevenDays.buys = buysArray;
       statistic.lastSevenDays.conversions = conversionsArray;
@@ -852,12 +725,13 @@ export const createChartSevenDaysOnePartner = async (id) => {
 
       if (!statistic) {
         console.log("Статистика не знайдена для партнера:", partnerId);
-      }
+      } 
 
       statistic.lastSevenDays.clicks = defaultArray;
       statistic.lastSevenDays.buys = defaultArray;
       statistic.lastSevenDays.conversions = defaultArray;
       await statistic.save();
+
   } catch(error) {
     console.log(error);
   }

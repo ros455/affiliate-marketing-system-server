@@ -11,6 +11,7 @@ const currentYear = kyivTime.format("YYYY");
 // Обчислюємо массив event на основі данних всіх партнерів
 export const calculateEventEveryDay = async () => {
     try {
+      console.log('calculateEventEveryDay',calculateEventEveryDay);
         const allStatistic = await PartnerStatisticModel.find();
         const adminStatistic = await AdminStatisticModel.findOne();
         const yesterday = moment().subtract(1, "day").format("DD.MM.YYYY");
@@ -50,6 +51,7 @@ export const calculateEventEveryDay = async () => {
 // Обчислюємо числові значення на основі всх партнерів
 export const calculateNumbersEveryDay = async () => {
     try {
+      console.log('calculateNumbersEveryDay',calculateNumbersEveryDay);
         const allStatistic = await PartnerStatisticModel.find();
         const adminStatistic = await AdminStatisticModel.findOne();
         let clickMonth = 0;
@@ -183,6 +185,7 @@ export const createDefaultChartMonth = async () => {
   // Обчислюємо місячний графік
 export const calculateChartMonth = async () => {
   try {
+    console.log('calculateChartMonth',calculateChartMonth);
     const allStatistic = await PartnerStatisticModel.find();
     const adminStatistic = await AdminStatisticModel.findOne();
     const yesterdayFull = moment().subtract(1, "day").format("DD.MM.YYYY");
@@ -316,6 +319,7 @@ export const calculateChartAllYears = async () => {
 
   export const createChartSevenDays = async () => {
     try {
+      console.log('createChartSevenDays',createChartSevenDays);
       const adminStatistic = await AdminStatisticModel.findOne(); // Ця змінна не використовується у вашому коді
       const allStatistic = await PartnerStatisticModel.find();
   
