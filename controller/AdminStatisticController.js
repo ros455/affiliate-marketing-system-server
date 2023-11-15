@@ -4,44 +4,39 @@ import UserModel from '../model/User.js';
 import * as AdminStatisticService from '../services/AdminStatisticService.js';
 
 import { CronJob } from 'cron';
-const jobEveryDay05 = new CronJob('05 00 * * *', () => {
+const jobEveryDayStage5 = new CronJob('14 00 * * *', () => {
   AdminStatisticService.calculateEventEveryDay();
   }, null, true, 'Europe/Kiev');
-const jobEveryDay06 = new CronJob('06 00 * * *', () => {
+const jobEveryDayStage6 = new CronJob('15 00 * * *', () => {
   AdminStatisticService.calculateNumbersEveryDay();
   }, null, true, 'Europe/Kiev');
-const jobEveryDay07 = new CronJob('07 00 * * *', () => {
+const jobEveryDayStage7 = new CronJob('16 00 * * *', () => {
   AdminStatisticService.calculateChartMonth();
   }, null, true, 'Europe/Kiev');
-const jobEveryDay08 = new CronJob('08 00 * * *', () => {
+const jobEveryDayStage8 = new CronJob('17 00 * * *', () => {
   AdminStatisticService.createChartSevenDays();
   }, null, true, 'Europe/Kiev');
 
   // Раз на місяць
-  const jobEveryMonth01 = new CronJob('01 00 02 * *', () => {
-    console.log('Функція виконується раз на місяць 01 числа о 00:10');
+  const jobEveryMonthStage1 = new CronJob('01 00 02 * *', () => {
     AdminStatisticService.clearMonthDataAdmin();
   }, null, true, 'Europe/Kiev');
 
-const jobEveryMonth013 = new CronJob('13 00 02 * *', () => {
-  console.log('Функція виконується раз на місяць 01 числа о 00:10');
+const jobEveryMonthStage4 = new CronJob('04 00 02 * *', () => {
   AdminStatisticService.calculateChartYear();
 }, null, true, 'Europe/Kiev');
 
-  const jobEveryMonth14 = new CronJob('14 00 02 * *', () => {
-    console.log('Функція виконується раз на місяць 01 числа о 00:10');
+  const jobEveryMonthStage5 = new CronJob('05 00 02 * *', () => {
     AdminStatisticService.createDefaultChartMonth();
   }, null, true, 'Europe/Kiev');
   
   // Раз на рік
   
-  const jobEveryYear17 = new CronJob('17 00 00 2 1 *', () => {
-    console.log('Функція виконується раз на рік 2 січня о 00:05');
-    AdminStatisticService.createDefaultChartYear();
+  const jobEveryYearStage3 = new CronJob('17 00 00 2 1 *', () => {
+    AdminStatisticService.calculateChartAllYears();
   }, null, true, 'Europe/Kiev');
 
-  const jobEveryYear18 = new CronJob('18 00 00 2 1 *', () => {
-    console.log('Функція виконується раз на рік 2 січня о 00:05');
+  const jobEveryYearStage4 = new CronJob('18 00 00 2 1 *', () => {
     AdminStatisticService.createDefaultChartYear();
   }, null, true, 'Europe/Kiev');
   
@@ -149,5 +144,5 @@ export const getOneUserForAdmin = async (req, res) => {
 }
 
 // setTimeout(() => {
-//   AdminStatisticService.createChartSevenDays();
+//   AdminStatisticService.createDefaultChartYear();
 // },5000)

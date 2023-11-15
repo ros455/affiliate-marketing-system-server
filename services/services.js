@@ -30,7 +30,6 @@ export const getMonthFromString = (dateString) => {
       daysArray.push(day.format('DD'));
       day = day.clone().add(1, 'day');
     }
-  console.log('daysArray',daysArray);
     return daysArray;
   };
 
@@ -61,7 +60,6 @@ export const getMonthFromString = (dateString) => {
 
   export const generateRandomPromoCode = (id) => {
     try {
-      console.log('id',id);
       const partnerId = id.toString();
       const dateNow = Date.now().toString();
       const firstLetter = getRandomLetter();
@@ -69,7 +67,6 @@ export const getMonthFromString = (dateString) => {
       const endLetter = getRandomLetter();
       // const uniqueString = `${randomString}-${id}-${dateNow}`;
       const uniqueString = `${firstLetter}${partnerId.slice(-3)}${middleLetter}${dateNow.slice(-3)}${endLetter}`;
-      console.log('uniqueString',uniqueString);
       return uniqueString;
     } catch(error) {
       console.log(error);
@@ -90,8 +87,6 @@ export const getMonthFromString = (dateString) => {
       daysArray.unshift(day.format('DD'));
       day = day.subtract(1, 'days');
     }
-  
-    console.log('daysArray', daysArray);
     return daysArray;
   };
 

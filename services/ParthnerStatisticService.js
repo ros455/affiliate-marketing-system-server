@@ -74,15 +74,139 @@ const codes = [
     value: 10,
     code: "nb6bu411p",
   },
+  {
+    codesId: "11",
+    date: "16.11.2023",
+    value: 10,
+    code: "nb6bu411p",
+  },
 ];
+
+export const createDefaultEvent = async () => {
+  try {
+    const allPartners = (await UserModel.find()).splice(1); // Видалив .splice(1), щоб не пропускати першого користувача.
+
+    for (const user of allPartners) {
+      if (!user._id) {
+        console.log("No partner found for the code:", user._id);
+        continue;
+      }
+
+      const partnerId = user._id.toString();
+      const statistic = await PartnerStatisticModel.findOne({ partnerId });
+
+      if (!statistic) {
+        console.log("No statistics found for partner:", partnerId);
+        continue;
+      }
+
+      const today = moment().subtract(0, "day").format("DD.MM.YYYY");
+
+      if(statistic.event[statistic.event.length - 1].date != today) {
+        statistic.event.push({
+          date: today,
+          clicks: [],
+          buys: []
+        })
+      }
+      await statistic.save();
+    }
+
+  } catch(error) {
+
+  }
+}
+
+// export const handleBuy = async () => {
+//   try {
+//     console.log('handleBuy',handleBuy);
+//     const response = await fetch('https://makenude.ai/api/affiliate?token=49114cade64b696c26hf854d068c374ac1ab3d4');
+//     const responseBuys = await response.json();
+
+//     const resoultArray =  [];
+//     responseBuys.subscriptions.forEach((item) => {
+//       if(item.promocode) {
+//         const date = moment(item.created_at);
+//         const formattedDate = date.format("DD.MM.YYYY");
+//         resoultArray.push({
+//           codesId: item.created_at,
+//           date: formattedDate,
+//           value: item.price,
+//           code: item.promocode,
+//         })
+//       }
+//     });
+
+//     if(resoultArray.length) {
+//     for (const item of resoultArray) {
+//       const partner = await UserModel.findOne({ promotionalCode: item.code });
+//       if (!partner) {
+//         console.log("No partner found for the code:", item.code);
+//         continue;
+//       }
+
+//       const partnerId = partner._id;
+//       const statistic = await PartnerStatisticModel.findOne({ partnerId });
+
+//       if (!statistic) {
+//         console.log("No statistics found for partner:", partnerId);
+//         continue;
+//       }
+
+//       const uniqueArrayId = [
+//         ...new Set(statistic.event.flatMap(parent => parent.buys.map(child => child.buyId)))
+//       ];
+
+//       const yesterday = moment().subtract(1, "day").format("DD.MM.YYYY");
+//       const yesterdayEvent = statistic.event.filter(
+//         (item) => item.date == yesterday
+//       );
+//       if(!yesterdayEvent.length && !uniqueArrayId.includes(item.codesId)) {
+//         statistic.event.push({
+//           date: yesterday,
+//           clicks: [],
+//           buys: [{
+//             date: yesterday,
+//             buyId: item.codesId
+//           }]
+//         })
+//       }
+
+//       console.log('yesterdayEvent',yesterdayEvent);
+
+//       if(!uniqueArrayId.includes(item.codesId) && yesterdayEvent.length) {
+//         yesterdayEvent[0].buys.push({
+//           date: yesterday,
+//           buyId: item.codesId
+//         })
+//       }
+
+//       let balanceValue = partner.balance;
+
+//       if(!uniqueArrayId.includes(item.codesId)) {
+//         balanceValue += item.value * (partner.bonus / 100);
+//         // console.log('balanceValue',balanceValue);
+//       }
+//       console.log('balanceValue',balanceValue);
+//       if(partner.balance != balanceValue) {
+//         console.log('work not equal');
+//         partner.balance = balanceValue;
+//       await partner.save();
+//       }
+//       // await statistic.save();
+//     }
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 export const handleBuy = async () => {
   try {
-    console.log('handleBuy',handleBuy);
     for (const item of codes) {
       const partner = await UserModel.findOne({ promotionalCode: item.code });
       if (!partner) {
-        console.log("Партнер не знайдений для коду:", item.code);
+        console.log("No partner found for the code:", item.code);
         continue;
       }
 
@@ -90,7 +214,7 @@ export const handleBuy = async () => {
       const statistic = await PartnerStatisticModel.findOne({ partnerId });
 
       if (!statistic) {
-        console.log("Статистика не знайдена для партнера:", partnerId);
+        console.log("No statistics found for partner:", partnerId);
         continue;
       }
 
@@ -99,6 +223,9 @@ export const handleBuy = async () => {
       ];
 
       const yesterday = moment().subtract(1, "day").format("DD.MM.YYYY");
+      // const yesterday = '16.11.2023';
+
+
       const yesterdayEvent = statistic.event.filter(
         (item) => item.date == yesterday
       );
@@ -113,8 +240,6 @@ export const handleBuy = async () => {
         })
       }
 
-      console.log('yesterdayEvent',yesterdayEvent);
-
       if(!uniqueArrayId.includes(item.codesId) && yesterdayEvent.length) {
         yesterdayEvent[0].buys.push({
           date: yesterday,
@@ -126,11 +251,8 @@ export const handleBuy = async () => {
 
       if(!uniqueArrayId.includes(item.codesId)) {
         balanceValue += item.value * (partner.bonus / 100);
-        // console.log('balanceValue',balanceValue);
       }
-      console.log('balanceValue',balanceValue);
       if(partner.balance != balanceValue) {
-        console.log('work not equal');
         partner.balance = balanceValue;
       await partner.save();
       }
@@ -145,12 +267,11 @@ export const handleBuy = async () => {
 
 export const handleCalculateNumbersStatisticsPartner = async () => {
   try {
-    console.log('handleCalculateNumbersStatisticsPartner',handleCalculateNumbersStatisticsPartner);
     const allPartners = (await UserModel.find()).splice(1); // Видалив .splice(1), щоб не пропускати першого користувача.
 
     for (const user of allPartners) {
       if (!user._id) {
-        console.log("Партнер не знайдений для коду:", user._id);
+        console.log("No partner found for the code:", user._id);
         continue;
       }
 
@@ -158,7 +279,7 @@ export const handleCalculateNumbersStatisticsPartner = async () => {
       const statistic = await PartnerStatisticModel.findOne({ partnerId });
 
       if (!statistic) {
-        console.log("Статистика не знайдена для партнера:", partnerId);
+        console.log("No statistics found for partner:", partnerId);
         continue;
       }
 
@@ -177,19 +298,17 @@ export const handleCalculateNumbersStatisticsPartner = async () => {
       );
 
       if(!yesterdayEvent.length) {
-        console.log("Статистика не знайдена");
+        console.log("No statistics found");
         continue;
       }
 
       // Для покупок
       let numberBuys = yesterdayEvent[0].buys.length;
-      console.log("numberBuys", numberBuys);
       allBuys += numberBuys;
       monthBuys += numberBuys;
 
       // Для кліків
       let numberClicks = yesterdayEvent[0].clicks.length;
-      console.log("numberClicks", numberClicks);
       allClicks += numberClicks;
       monthClicks += numberClicks;
 
@@ -214,17 +333,16 @@ export const handleCalculateNumbersStatisticsPartner = async () => {
 export const clearMonthDataAllParthner = async () => {
   try {
     const allPartner = (await UserModel.find()).splice(1);
-    console.log("allPartner", allPartner);
     for (const user of allPartner) {
       if (!user._id) {
-        console.log("Партнер не знайдений для коду:", user._id);
+        console.log("No partner found for the code:", user._id);
         continue;
       }
       const partnerId = user._id.toString();
-      console.log("partnerId", partnerId);
+
       const statistic = await PartnerStatisticModel.findOne({ partnerId });
       if (!statistic) {
-        console.log("Статистика не знайдена для партнера:", partnerId);
+        console.log("No statistics found for partner:", partnerId);
         continue;
       }
       statistic.buysMonth = 0;
@@ -251,7 +369,7 @@ export const createDefaultChartMonth = async () => {
 
   for (const user of allPartner) {
     if (!user._id) {
-      console.log("Партнер не знайдений для коду:", user._id);
+      console.log("No partner found for the code:", user._id);
       continue;
     }
 
@@ -259,7 +377,7 @@ export const createDefaultChartMonth = async () => {
     const statistic = await PartnerStatisticModel.findOne({ partnerId });
 
     if (!statistic) {
-      console.log("Статистика не знайдена для партнера:", partnerId);
+      console.log("No statistics found for partner:", partnerId);
       continue;
     }
 
@@ -268,27 +386,29 @@ export const createDefaultChartMonth = async () => {
     statistic.chartsMonth.conversions = defaultArray;
     await statistic.save();
   }
-  console.log("daysOfCurrentMonth", daysOfCurrentMonth);
+
 };
 
 // Наповнення місячного графіка
 
 export const fillingCartMonth = async () => {
   try {
-    console.log('fillingCartMonth',fillingCartMonth);
     // Встановіть часовий пояс на Київ
     moment.tz.setDefault("Europe/Kiev");
 
     // Отримайте вчорашню дату
-    let yesterdayFull = moment().subtract(1, "day").format("DD.MM.YYYY");
-    const yesterday = yesterdayFull.split('.')[0]
+    // let yesterdayFull = moment().subtract(1, "day").format("DD.MM.YYYY");
+    // const yesterday = yesterdayFull.split('.')[0];
+
+    let yesterdayFull = '16.11.2023';
+    const yesterday = '16';
 
 
     const allPartner = await UserModel.find();
 
     for (const user of allPartner) {
       if (!user._id) {
-        console.log("Партнер не знайдений для коду:", user._id);
+        console.log("No partner found for the code:", user._id);
         continue;
       }
 
@@ -299,7 +419,7 @@ export const fillingCartMonth = async () => {
       });
 
       if (!statistic) {
-        console.log("Статистика не знайдена для партнера:", partnerId);
+        console.log("No statistics found for partner:", partnerId);
         continue;
       }
 
@@ -308,44 +428,36 @@ export const fillingCartMonth = async () => {
       );
 
       if (!yesterdayEvent.length) {
-        console.log("Статистика не знайдена");
+        console.log("Statistic not found");
         continue;
       }
 
-      console.log("yesterdayEvent", yesterdayEvent);
       const clicksNumber = yesterdayEvent[0].clicks.length;
       const buysNumber = yesterdayEvent[0].buys.length;
-      console.log('clicksNumber',clicksNumber);
-      console.log('buysNumber',buysNumber);
+
       let conversionsNumber = 0;
-      console.log('yesterday',yesterday);
+
       if (buysNumber && clicksNumber) {
         conversionsNumber = (buysNumber / clicksNumber) * 100;
+      } else if (buysNumber > 0 && clicksNumber == 0) {
+        conversionsNumber = 100;
       }
-      console.log('work1');
+
       let entryToUpdateClicks = statistic.chartsMonth.clicks.find(
         (item) => item.date === yesterday
       );
-      console.log('work2');
+
       let entryToUpdateBuys = statistic.chartsMonth.buys.find(
         (item) => item.date === yesterday
       );
-      console.log('work3');
+
       let entryToUpdateConversions = statistic.chartsMonth.conversions.find(
         (item) => item.date === yesterday
       );
-      console.log('entryToUpdateClicks',entryToUpdateClicks);
-      console.log('entryToUpdateBuys',entryToUpdateBuys);
-      console.log('entryToUpdateConversions',entryToUpdateConversions);
-      if (entryToUpdateClicks) {
+
         entryToUpdateClicks.number = clicksNumber;
-      }
-      if (entryToUpdateBuys) {
         entryToUpdateBuys.number = buysNumber;
-      }
-      if (entryToUpdateConversions) {
         entryToUpdateConversions.number = conversionsNumber.toFixed(1);
-      }
 
       // Після змін, зберігаємо оновлену статистику
       await statistic.save();
@@ -372,7 +484,7 @@ export const createDefaultChartYear = async () => {
 
   for (const user of allPartner) {
     if (!user._id) {
-      console.log("Партнер не знайдений для коду:", user._id);
+      console.log("No partner found for the code:", user._id);
       continue;
     }
 
@@ -380,7 +492,7 @@ export const createDefaultChartYear = async () => {
     const statistic = await PartnerStatisticModel.findOne({ partnerId });
 
     if (!statistic) {
-      console.log("Статистика не знайдена для партнера:", partnerId);
+      console.log("No statistics found for partner:", partnerId);
       continue;
     }
 
@@ -399,21 +511,20 @@ export const calculataLastMonthToYearChart = async () => {
     const allPartner = (await UserModel.find()).splice(1);
     for (const user of allPartner) {
       if (!user._id) {
-        console.log("Партнер не знайдений для коду:", user._id);
+        console.log("No partner found for the code:", user._id);
         continue;
       }
       const partnerId = user._id.toString();
-      console.log("partnerId", partnerId);
+
       const statistic = await PartnerStatisticModel.findOne({ partnerId });
       if (!statistic) {
-        console.log("Статистика не знайдена для партнера:", partnerId);
+        console.log("No statistics found for partner:", partnerId);
         continue;
       }
       let clicksCurrentMonth = 0;
       let buysCurrentMonth = 0;
       let conversionCurrentMonth = 0;
-      let actualDate = statistic.chartsMonth.clicks[0].date;
-      let month = Services.getMonthFromString(actualDate);
+      let month = moment().subtract(1, 'months').format("MM");
       statistic.chartsMonth.clicks.forEach((click) => {
         clicksCurrentMonth += click.number;
       });
@@ -425,21 +536,20 @@ export const calculataLastMonthToYearChart = async () => {
         conversionCurrentMonth = (buysCurrentMonth / clicksCurrentMonth) * 100;
       }
 
-      console.log("clicksCurrentMonth", clicksCurrentMonth);
-      console.log("buysCurrentMonth", buysCurrentMonth);
-      console.log("conversionCurrentMonth", conversionCurrentMonth.toFixed(1));
-      statistic.chartsYear.buys.push({
-        date: month,
-        number: buysCurrentMonth,
+      const currentMonthBuysItem = statistic.chartsYear.buys.find((item) => {
+        return item.date === month;
       });
-      statistic.chartsYear.clicks.push({
-        date: month,
-        number: clicksCurrentMonth,
+      const currentMonthClicksItem = statistic.chartsYear.clicks.find((item) => {
+        return item.date === month;
       });
-      statistic.chartsYear.conversions.push({
-        date: month,
-        number: conversionCurrentMonth.toFixed(1),
+      const currentMonthConversionsItem = statistic.chartsYear.conversions.find((item) => {
+        return item.date === month;
       });
+
+      currentMonthBuysItem.number = buysCurrentMonth;
+      currentMonthClicksItem.number = clicksCurrentMonth;
+      currentMonthConversionsItem.number = ((buysCurrentMonth / clicksCurrentMonth) * 100).toFixed(1);
+
       await statistic.save();
     }
   } catch (error) {
@@ -464,7 +574,7 @@ export const createDefaultChartAllYears = async () => {
 
   for (const user of allPartner) {
     if (!user._id) {
-      console.log("Партнер не знайдений для коду:", user._id);
+      console.log("No partner found for the code:", user._id);
       continue;
     }
 
@@ -472,7 +582,7 @@ export const createDefaultChartAllYears = async () => {
     const statistic = await PartnerStatisticModel.findOne({ partnerId });
 
     if (!statistic) {
-      console.log("Статистика не знайдена для партнера:", partnerId);
+      console.log("No statistics found for partner:", partnerId);
       continue;
     }
 
@@ -489,31 +599,29 @@ export const createDefaultChartAllYears = async () => {
 export const calculateChartAllYears = async () => {
   try {
     const allPartner = (await UserModel.find()).splice(1);
-
+    // const previousYear = kyivTime.subtract(1, 'years').format("YYYY");
+    const previousYear = '2023';
     for (const user of allPartner) {
       if (!user._id) {
-        console.log("Партнер не знайдений для коду:", user._id);
+        console.log("No partner found for the code:", user._id);
         continue;
       }
-
       const partnerId = user._id.toString();
 
       const statistic = await PartnerStatisticModel.findOne({ partnerId });
 
       if (!statistic) {
-        console.log("Статистика не знайдена для партнера:", partnerId);
+        console.log("No statistics found for partner:", partnerId);
         continue;
       }
 
       let clicksCurrentYear = statistic.chartsYear.clicks.reduce((acc, current) => acc + current.number, 0);
-      let buysCurrentYear = statistic.chartsYear.buys.reduce((acc, current) => acc + current.number, 0);;
+      let buysCurrentYear = statistic.chartsYear.buys.reduce((acc, current) => acc + current.number, 0);
       let conversionCurrentYear = 0;
 
-      let actualDate = currentYear;
-
-      let actualBuysItem = statistic.chartsYearAllPeriod.buys.filter((item) => item.date == actualDate);
-      let actualClicksItem = statistic.chartsYearAllPeriod.clicks.filter((item) => item.date == actualDate);
-      let actualConversionsItem = statistic.chartsYearAllPeriod.conversions.filter((item) => item.date == actualDate);
+      let actualBuysItem = statistic.chartsYearAllPeriod.buys.filter((item) => item.date == previousYear);
+      let actualClicksItem = statistic.chartsYearAllPeriod.clicks.filter((item) => item.date == previousYear);
+      let actualConversionsItem = statistic.chartsYearAllPeriod.conversions.filter((item) => item.date == previousYear);
 
       if(buysCurrentYear && clicksCurrentYear) {
         conversionCurrentYear = (buysCurrentYear / clicksCurrentYear) * 100;
@@ -523,13 +631,7 @@ export const calculateChartAllYears = async () => {
       actualClicksItem[0].number = clicksCurrentYear;
       actualConversionsItem[0].number = conversionCurrentYear.toFixed(1);
 
-      console.log('clicksCurrentYear',clicksCurrentYear);
-      console.log('buysCurrentYear',buysCurrentYear);
-      console.log('conversionCurrentYear',conversionCurrentYear);
-
       await statistic.save();
-
-      console.log('actualBuysItem',actualBuysItem);
     }
   } catch(error) {
     console.log('error',error);
@@ -539,11 +641,11 @@ export const calculateChartAllYears = async () => {
 // Наповнення 7 денного графіка
 
 export const createChartSevenDays = async () => {
-  try {console.log('createChartSevenDays',createChartSevenDays);
+  try {
     const allPartner = (await UserModel.find()).splice(1);
     for (const user of allPartner) {
       if (!user._id) {
-        console.log("Партнер не знайдений для коду:", user._id);
+        console.log("No partner found for the code:", user._id);
         continue;
       }
 
@@ -551,7 +653,7 @@ export const createChartSevenDays = async () => {
       const statistic = await PartnerStatisticModel.findOne({ partnerId });
 
       if (!statistic) {
-        console.log("Статистика не знайдена для партнера:", partnerId);
+        console.log("No statistics found for partner:", partnerId);
         continue;
       }
       const clicksArray = [];
@@ -559,33 +661,35 @@ export const createChartSevenDays = async () => {
       const conversionsArray = [];
 
       if(!statistic.event.length) {
-        console.log("Статистика не знайдена");
+        console.log("Statistic not found");
         continue;
       }
 
       const lastSevenDays = statistic.event.slice(-7);
 
       if(lastSevenDays.length != 7) {
-        console.log("Статистики недостатньо");
         const lastEvent = statistic.event;
         const chartLastSevenDays = statistic.lastSevenDays;
 
         chartLastSevenDays.clicks.forEach((item,index) => {
           lastEvent.forEach((event) => {
             if(event.date.split('.')[0] == item.date) {
-              console.log('Find');
               chartLastSevenDays.buys[index].number = event.buys.length;
               chartLastSevenDays.clicks[index].number = event.clicks.length;
-              chartLastSevenDays.conversions[index].number = (event.buys.length / event.clicks.length) * 100;
+
+              if(event.buys.lengt && event.clicks.length) {
+                chartLastSevenDays.conversions[index].number = (event.buys.length / event.clicks.length) * 100;
+              } else if (event.buys.length > 0 && event.clicks.length == 0) {
+                chartLastSevenDays.conversions[index].number = 100;
+              }
             }
           })
         })
   
-        console.log('chartLastSevenDays',chartLastSevenDays);
         statistic.lastSevenDays.buys = chartLastSevenDays.buys;
         statistic.lastSevenDays.clicks = chartLastSevenDays.clicks;
         statistic.lastSevenDays.conversions = chartLastSevenDays.conversions;
-        console.log('chartLastSevenDays',chartLastSevenDays);
+
         await statistic.save();
         continue;
       }
@@ -604,6 +708,8 @@ export const createChartSevenDays = async () => {
 
         if(item.buys.length && item.clicks.length) {
           iterationConversion = (item.buys.length / item.clicks.length) * 100;
+        } else if (item.buys.length > 0 && item.clicks.length == 0) {
+          iterationConversion = 100;
         }
 
         conversionsArray.push({
@@ -616,9 +722,6 @@ export const createChartSevenDays = async () => {
       statistic.lastSevenDays.buys = buysArray;
       statistic.lastSevenDays.conversions = conversionsArray;
 
-      console.log('clicksArray',clicksArray);
-      console.log('buysArray',buysArray);
-      console.log('conversionsArray',conversionsArray);
       await statistic.save();
     }
   } catch(error) {
@@ -641,14 +744,13 @@ export const createDefaultChartMonthOnePartner = async (id) => {
     const statistic = await PartnerStatisticModel.findById(id);
 
     if (!statistic) {
-      console.log("Статистика не знайдена для партнера:", partnerId);
+      console.log("No statistics found for partner:", partnerId);
     }
 
     statistic.chartsMonth.clicks = defaultArray;
     statistic.chartsMonth.buys = defaultArray;
     statistic.chartsMonth.conversions = defaultArray;
     await statistic.save();
-    console.log('DAYS');
 };
 
 // Створення пустого річного графіка для одного партнера
@@ -667,7 +769,7 @@ export const createDefaultChartYearOnePartner = async (id) => {
   const statistic = await PartnerStatisticModel.findById(id);
 
     if (!statistic) {
-      console.log("Статистика не знайдена для партнера:", id);
+      console.log("No statistics found for partner:", id);
     }
 
     statistic.chartsYear.clicks = defaultArray;
@@ -675,7 +777,6 @@ export const createDefaultChartYearOnePartner = async (id) => {
     statistic.chartsYear.conversions = defaultArray;
 
     await statistic.save();
-    console.log('MONTH');
   };
 
 // Створення пустого графіка за весь період для одного партнера
@@ -696,7 +797,7 @@ export const createDefaultChartAllYearsOnePartner = async (id) => {
     const statistic = await PartnerStatisticModel.findById(id);
 
     if (!statistic) {
-      console.log("Статистика не знайдена для партнера:", partnerId);
+      console.log("No statistics found for partner:", partnerId);
     }
 
     statistic.chartsYearAllPeriod.clicks = defaultArray;
@@ -704,7 +805,6 @@ export const createDefaultChartAllYearsOnePartner = async (id) => {
     statistic.chartsYearAllPeriod.conversions = defaultArray;
 
     await statistic.save();
-    console.log('YEAR');
 };
 
 // Наповнення 7 денного графіка для одного партнера
@@ -724,7 +824,7 @@ export const createChartSevenDaysOnePartner = async (id) => {
     const statistic = await PartnerStatisticModel.findById(id);
 
       if (!statistic) {
-        console.log("Статистика не знайдена для партнера:", partnerId);
+        console.log("No statistics found for partner:", partnerId);
       } 
 
       statistic.lastSevenDays.clicks = defaultArray;

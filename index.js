@@ -21,8 +21,6 @@ const startTime = moment(kyivTime).set({ hour: 1, minute: 0, second: 0 }).valueO
 const endTime = moment(kyivTime).set({ hour: 2, minute: 0, second: 0 }).valueOf();
 const currentTime = Date.now();
 
-console.log('formattedDate',formattedDate);
-
 setInterval(() => {
   if (currentTime >= startTime && currentTime <= endTime) {
     

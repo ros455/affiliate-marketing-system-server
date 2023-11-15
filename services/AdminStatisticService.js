@@ -11,7 +11,6 @@ const currentYear = kyivTime.format("YYYY");
 // Обчислюємо массив event на основі данних всіх партнерів
 export const calculateEventEveryDay = async () => {
     try {
-      console.log('calculateEventEveryDay',calculateEventEveryDay);
         const allStatistic = await PartnerStatisticModel.find();
         const adminStatistic = await AdminStatisticModel.findOne();
         const yesterday = moment().subtract(1, "day").format("DD.MM.YYYY");
@@ -28,10 +27,9 @@ export const calculateEventEveryDay = async () => {
             (item) => item.date == yesterday
           );
           if (!yesterdayEvent.length) {
-            console.log("Статистика не знайдена для користувача",oneStat._id);
+            console.log("No statistics found for user",oneStat._id);
             continue;
           }
-            console.log('yesterdayEvent',yesterdayEvent);
             const lastEventItem = yesterdayEvent[0];
             eventDate = lastEventItem.date;
             eventClicks += lastEventItem.clicks.length;
@@ -51,7 +49,6 @@ export const calculateEventEveryDay = async () => {
 // Обчислюємо числові значення на основі всх партнерів
 export const calculateNumbersEveryDay = async () => {
     try {
-      console.log('calculateNumbersEveryDay',calculateNumbersEveryDay);
         const allStatistic = await PartnerStatisticModel.find();
         const adminStatistic = await AdminStatisticModel.findOne();
         let clickMonth = 0;
@@ -89,16 +86,16 @@ export const calculateNumbersEveryDay = async () => {
 // Очищення місячних числових значень
 export const clearMonthDataAdmin = async () => {
   try {
-    const allStatistic = await PartnerStatisticModel.find();
-    console.log("allPartner", allPartner);
+    const adminStatistic = await AdminStatisticModel.findOne();
 
-      if (!allStatistic) {
-        console.log("Партнер не знайдений для коду:", user._id);
+      if (!adminStatistic) {
+        console.log("Statistic not found");
+        return;
       }
 
-      allStatistic.buysMonth = 0;
-      allStatistic.clicksMonth = 0;
-      await allStatistic.save();
+      adminStatistic.buysMonth = 0;
+      adminStatistic.clicksMonth = 0;
+      await adminStatistic.save();
   } catch (error) {
     console.log(error);
   }
@@ -118,11 +115,9 @@ export const createDefaultChartMonth = async () => {
     const adminStatistic = await AdminStatisticModel.findOne();
     
       if (!adminStatistic) {
-        console.log('Статистика не знайдена');
+        console.log('Statistic not found');
+        return
       }
-
-      console.log('adminStatistic',adminStatistic);
-      console.log('defaultArray',defaultArray);
 
       adminStatistic.chartsMonth.clicks = defaultArray;
       adminStatistic.chartsMonth.buys = defaultArray;
@@ -146,7 +141,8 @@ export const createDefaultChartMonth = async () => {
     const statistic = await AdminStatisticModel.findOne();
 
       if (!statistic) {
-        console.log('Статистика не знайдена');
+        console.log('Statistic not found');
+        return
       }
 
       statistic.chartsYear.clicks = defaultArray;
@@ -172,7 +168,8 @@ export const createDefaultChartMonth = async () => {
     const statistic = await AdminStatisticModel.findOne();
 
       if (!statistic) {
-        console.log('Статистика не знайдена');
+        console.log('Statistic not found');
+        return
       }
 
       statistic.chartsYearAllPeriod.clicks = defaultArray;
@@ -185,7 +182,6 @@ export const createDefaultChartMonth = async () => {
   // Обчислюємо місячний графік
 export const calculateChartMonth = async () => {
   try {
-    console.log('calculateChartMonth',calculateChartMonth);
     const allStatistic = await PartnerStatisticModel.find();
     const adminStatistic = await AdminStatisticModel.findOne();
     const yesterdayFull = moment().subtract(1, "day").format("DD.MM.YYYY");
@@ -212,15 +208,12 @@ export const calculateChartMonth = async () => {
       const yesterdayBuyEvent = oneStat.chartsMonth.buys.filter(
         (item) => item.date == yesterday
       );
-      console.log('yesterdayClickEvent',yesterdayClickEvent);
-      console.log('yesterdayBuyEvent',yesterdayBuyEvent);
+
       // const yesterdayConversionEvent = oneStat.chartsMonth.conversions.filter((item) => item.date == yesterday);
       buysNumber += yesterdayBuyEvent[0].number;
       clicksNumber += yesterdayClickEvent[0].number;
     }
-    console.log('adminChartYesterdayClickObject',adminChartYesterdayClickObject);
-    console.log('adminChartYesterdayBuyObject',adminChartYesterdayBuyObject);
-    console.log('adminChartYesterdayConversionObject',adminChartYesterdayConversionObject);
+
     if (buysNumber && clicksNumber) {
       conversionsNumber = (buysNumber / clicksNumber) * 100;
     }
@@ -247,35 +240,25 @@ export const calculateChartYear = async () => {
         let buysNumber = 0;
         let clicksNumber = 0;
         let conversionsNumber = 0;
+        let month = moment().subtract(1, 'months').format("MM");
 
         for (const oneStat of allStatistic) {
-            const lastIndexForChart = oneStat.chartsYear.buys.length - 1;
-            buysNumber += oneStat.chartsYear.buys[lastIndexForChart].number;
-            clicksNumber += oneStat.chartsYear.clicks[lastIndexForChart].number;
-        }
+          const buysItem =  oneStat.chartsYear.buys.filter((item) => item.date == month)
 
-        if(buysNumber && clicksNumber) {
-            conversionsNumber = (buysNumber / clicksNumber) * 100
-        }
+          buysNumber += buysItem[0].number;
+          const clicksItem =  oneStat.chartsYear.clicks.filter((item) => item.date == month)
+          clicksNumber += clicksItem[0].number;
+      }
 
-        adminStatistic.chartsYear.clicks.push({
-            date: formattedDate,
-            number: clicksNumber
-          })
+        const clicksAdminitem = adminStatistic.chartsYear.clicks.filter((item) => item.date == month);
+        const buysAdminitem = adminStatistic.chartsYear.buys.filter((item) => item.date == month);
+        const converionsAdminitem = adminStatistic.chartsYear.conversions.filter((item) => item.date == month);
+        conversionsNumber = (buysNumber / clicksNumber) * 100
+        clicksAdminitem[0].number = clicksNumber;
+        buysAdminitem[0].number = buysNumber;
+        converionsAdminitem[0].number = conversionsNumber.toFixed(1);
 
-        adminStatistic.chartsYear.buys.push({
-            date: formattedDate,
-            number: buysNumber
-          })
-
-        adminStatistic.chartsYear.conversions.push({
-            date: formattedDate,
-            number: conversionsNumber.toFixed(1)
-          })
-          console.log('buysNumber',buysNumber);
-          console.log('clicksNumber',clicksNumber);
-          console.log('conversionsNumber',conversionsNumber);
-          await adminStatistic.save();
+        await adminStatistic.save();
     } catch(error) {
         console.log(error);
     }
@@ -290,24 +273,27 @@ export const calculateChartAllYears = async () => {
     let buysNumber = 0;
     let clicksNumber = 0;
     let conversionsNumber = 0;
-    const actualIndexForAdminChart = adminStatistic.chartsYearAllPeriod.buys.findIndex((item) => item.date == currentYear);
+        // const previousYear = kyivTime.subtract(1, 'years').format("YYYY");
+        const previousYear = '2023';
 
     for (const oneStat of allStatistic) {
-      const actualIndexForChart = oneStat.chartsYearAllPeriod.buys.findIndex((item) => item.date == currentYear);
+      let partnerBuysItem = oneStat.chartsYearAllPeriod.buys.filter((item) => item.date == previousYear);
+      let partnerClicksItem = oneStat.chartsYearAllPeriod.clicks.filter((item) => item.date == previousYear);
 
-      buysNumber += oneStat.chartsYearAllPeriod.buys[actualIndexForChart].number;
-      clicksNumber += oneStat.chartsYearAllPeriod.clicks[actualIndexForChart].number;
-      console.log('actualIndexForChart',actualIndexForChart);
-    }
-    console.log('buysNumber',buysNumber);
-    console.log('clicksNumber',clicksNumber);
+      buysNumber += partnerBuysItem[0].number;
+      clicksNumber += partnerClicksItem[0].number;
 
-    if(clicksNumber && buysNumber) {
-      conversionsNumber = (buysNumber / clicksNumber) * 100;
     }
-    adminStatistic.chartsYearAllPeriod.buys[actualIndexForAdminChart].number = buysNumber;
-    adminStatistic.chartsYearAllPeriod.clicks[actualIndexForAdminChart].number = clicksNumber;
-    adminStatistic.chartsYearAllPeriod.conversions[actualIndexForAdminChart].number = conversionsNumber.toFixed(1);
+
+    let actualBuysItem = adminStatistic.chartsYearAllPeriod.buys.filter((item) => item.date == previousYear);
+    let actualClicksItem = adminStatistic.chartsYearAllPeriod.clicks.filter((item) => item.date == previousYear);
+    let actualConversionsItem = adminStatistic.chartsYearAllPeriod.conversions.filter((item) => item.date == previousYear);
+
+    conversionsNumber = (buysNumber / clicksNumber) * 100;
+
+    actualBuysItem[0].number = buysNumber;
+    actualClicksItem[0].number = clicksNumber;
+    actualConversionsItem[0].number = conversionsNumber.toFixed(1);
 
     await adminStatistic.save();
   } catch(error) {
@@ -319,7 +305,6 @@ export const calculateChartAllYears = async () => {
 
   export const createChartSevenDays = async () => {
     try {
-      console.log('createChartSevenDays',createChartSevenDays);
       const adminStatistic = await AdminStatisticModel.findOne(); // Ця змінна не використовується у вашому коді
       const allStatistic = await PartnerStatisticModel.find();
   
@@ -341,7 +326,6 @@ export const calculateChartAllYears = async () => {
       }
       adminStatistic.lastSevenDaysConversions = newArray;
       await adminStatistic.save();
-      console.log('newArray', newArray);
   
     } catch (error) {
       console.log(error);

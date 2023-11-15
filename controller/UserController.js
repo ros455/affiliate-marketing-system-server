@@ -35,7 +35,6 @@ export const createPartnerStatistic = async (userId) => {
 
 export const register = async (req, res) => {
     try {
-      console.log('register');
         const { email, name, password } = req.body;
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
@@ -59,8 +58,6 @@ export const register = async (req, res) => {
 
         const link = Service.generateRandomLink(user._id);
         const promotionalCode = Service.generateRandomPromoCode(user._id);
-
-        console.log('promotionalCode',promotionalCode);
 
         const statistics = await createPartnerStatistic(user._id);
         user.statistics = statistics._id;
@@ -87,16 +84,13 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
     try {
         const user = await UserModel.findOne({email: req.body.email});
-        console.log('WORK');
         if(!user) {
-          console.log('uSER');
             return res.status(404).json({
                 message: 'User not found',
             })
         }
 
         if(user.disabled) {
-          console.log('disabled',user.disabled);
           return res.status(404).json({
               message: 'User disabled',
           })
@@ -105,7 +99,6 @@ export const login = async (req, res) => {
         const isValidPass = await bcrypt.compare(req.body.password, user._doc.password);
 
         if(!isValidPass) {
-          console.log('PASSWORD');
             return res.status(400).json({
                 message: 'Password or email wrong',
             })
@@ -129,7 +122,6 @@ export const login = async (req, res) => {
 
 export const getMe = async (req, res) => {
     try {
-      console.log('work');
       const user = await UserModel.findById(req.userId)
       .populate('statistics');
   
@@ -194,7 +186,6 @@ export const getMe = async (req, res) => {
       const skip = (page - 1) * limit;
       const userData = await UserModel.find().skip(skip).limit(limit).populate('statistics');
 
-      console.log('userData',userData);
       res.json(userData.slice(1));
     } catch (error) {
       console.log(error);
@@ -300,16 +291,10 @@ export const getMe = async (req, res) => {
       const imageStore = await ImageStoreModel.findOne();
 
       const __filename = fileURLToPath(import.meta.url);
-      console.log('__filename',__filename);
 
       const __dirname = dirname(__filename);
-
-      console.log('__dirname',__dirname);
-  
   
       const filePath = path.join(__dirname, "..", imageStore.BigBanner); // Отримайте шлях до файлу
-
-      console.log('filePath',filePath);
 
       if (filePath) {
         return res.download(filePath);
@@ -328,16 +313,10 @@ export const getMe = async (req, res) => {
       const imageStore = await ImageStoreModel.findOne();
 
       const __filename = fileURLToPath(import.meta.url);
-      console.log('__filename',__filename);
 
       const __dirname = dirname(__filename);
-
-      console.log('__dirname',__dirname);
-  
   
       const filePath = path.join(__dirname, "..", imageStore.MiddleBanner); // Отримайте шлях до файлу
-
-      console.log('filePath',filePath);
 
       if (filePath) {
         return res.download(filePath);
@@ -356,16 +335,10 @@ export const getMe = async (req, res) => {
       const imageStore = await ImageStoreModel.findOne();
 
       const __filename = fileURLToPath(import.meta.url);
-      console.log('__filename',__filename);
 
       const __dirname = dirname(__filename);
-
-      console.log('__dirname',__dirname);
-  
   
       const filePath = path.join(__dirname, "..", imageStore.SmallBanner); // Отримайте шлях до файлу
-
-      console.log('filePath',filePath);
 
       if (filePath) {
         return res.download(filePath);

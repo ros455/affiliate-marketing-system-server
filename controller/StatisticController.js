@@ -9,44 +9,42 @@ const formattedTime = kyivTime.format('HH:mm');
 
 // // Кожен день
 
-const jobEveryDay01 = new CronJob('01 00 * * *', () => {
+const jobEveryDayStage0 = new CronJob('00 00 * * *', () => {
+  ParthnerStatisticService.createDefaultEvent();
+}, null, true, 'Europe/Kiev');
+const jobEveryDayStage1 = new CronJob('10 00 * * *', () => {
   ParthnerStatisticService.handleBuy();
 }, null, true, 'Europe/Kiev');
-const jobEveryDay02 = new CronJob('02 00 * * *', () => {
+const jobEveryDayStage2 = new CronJob('11 00 * * *', () => {
   ParthnerStatisticService.handleCalculateNumbersStatisticsPartner();
 }, null, true, 'Europe/Kiev');
-const jobEveryDay03 = new CronJob('03 00 * * *', () => {
+const jobEveryDayStage3 = new CronJob('12 00 * * *', () => {
   ParthnerStatisticService.fillingCartMonth();
 }, null, true, 'Europe/Kiev');
-const jobEveryDay04 = new CronJob('04 00 * * *', () => {
+const jobEveryDayStage4 = new CronJob('13 00 * * *', () => {
   ParthnerStatisticService.createChartSevenDays();
 }, null, true, 'Europe/Kiev');
 
 // Раз на місяць
-const jobEveryMonth01 = new CronJob('01 00 02 * *', () => {
-  console.log('Функція виконується раз на місяць 01 числа о 00:10');
+const jobEveryMonthStage1 = new CronJob('01 00 02 * *', () => {
   ParthnerStatisticService.clearMonthDataAllParthner();
 }, null, true, 'Europe/Kiev');
 
-const jobEveryMonth10 = new CronJob('10 00 02 * *', () => {
-  console.log('Функція виконується раз на місяць 01 числа о 00:10');
+const jobEveryMonthStage2 = new CronJob('02 00 02 * *', () => {
   ParthnerStatisticService.calculataLastMonthToYearChart();
 }, null, true, 'Europe/Kiev');
 
-const jobEveryMonth11 = new CronJob('11 00 02 * *', () => {
-  console.log('Функція виконується раз на місяць 01 числа о 00:10');
+const jobEveryMonthStage3 = new CronJob('03 00 02 * *', () => {
   ParthnerStatisticService.createDefaultChartMonth();
 }, null, true, 'Europe/Kiev');
 
 // Раз на рік
 
-const jobEveryYear16 = new CronJob('16 00 00 2 1 *', () => {
-  console.log('Функція виконується раз на рік 2 січня о 00:05');
+const jobEveryYearStage1 = new CronJob('16 00 00 2 1 *', () => {
   ParthnerStatisticService.calculateChartAllYears();
 }, null, true, 'Europe/Kiev');
 
-const jobEveryYear17 = new CronJob('17 00 00 2 1 *', () => {
-  console.log('Функція виконується раз на рік 2 січня о 00:05');
+const jobEveryYearStage2 = new CronJob('17 00 00 2 1 *', () => {
   ParthnerStatisticService.createDefaultChartYear();
 }, null, true, 'Europe/Kiev');
 
@@ -73,8 +71,7 @@ export const createPartnerStatistic = async (req, res) => {
   export const handleLink = async (req, res) => {
     try {
       const { link } = req.query;
-      console.log('link',link);
-      console.log('work handle click');
+
       const partner = await UserModel.findOne({ link });
 
       if(!partner) {
@@ -115,5 +112,5 @@ export const createPartnerStatistic = async (req, res) => {
   }
 
   // setTimeout(() => {
-  //   ParthnerStatisticService.createChartSevenDays();
+  //   ParthnerStatisticService.createDefaultChartYear();
   // },5000)
