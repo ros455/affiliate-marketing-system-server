@@ -3,10 +3,7 @@ import PartnerStatisticModel from '../model/PartnerStatistic.js';
 import UserModel from '../model/User.js';
 import * as Services from './services.js';
 import moment from 'moment-timezone';
-import { CronJob } from 'cron';
 const kyivTime = moment().tz('Europe/Kiev');
-const formattedDate = kyivTime.format('DD.MM.YYYY');
-const currentYear = kyivTime.format("YYYY");
 
 // Обчислюємо массив event на основі данних всіх партнерів
 export const calculateEventEveryDay = async () => {
@@ -14,9 +11,11 @@ export const calculateEventEveryDay = async () => {
         const allStatistic = await PartnerStatisticModel.find();
         const adminStatistic = await AdminStatisticModel.findOne();
         const yesterday = moment().subtract(1, "day").format("DD.MM.YYYY");
+        // const yesterday = '18.11.2023';
         let eventDate;
         let eventClicks = 0;
         let eventBuys = 0;
+        let eventSumBuys = 0;
 
         if(!allStatistic) {
           return;
@@ -34,11 +33,14 @@ export const calculateEventEveryDay = async () => {
             eventDate = lastEventItem.date;
             eventClicks += lastEventItem.clicks.length;
             eventBuys += lastEventItem.buys.length;
+            eventSumBuys += lastEventItem.buys.reduce((acc, current) => acc + current.value, 0);
         }
+
         adminStatistic.event.push({
             date: eventDate,
             clicksNumber: eventClicks,
-            buysNumber: eventBuys
+            buysNumber: eventBuys,
+            buysSumNumber: eventSumBuys
         })
         await adminStatistic.save();
     } catch (error) {
@@ -53,8 +55,10 @@ export const calculateNumbersEveryDay = async () => {
         const adminStatistic = await AdminStatisticModel.findOne();
         let clickMonth = 0;
         let buyMonth = 0;
+        let buySumMonth = 0;
         let clickAllPeriod = 0;
         let buyAllPeriod = 0;
+        let buySumAllPeriod = 0;
         let allConversions = 0;
 
         if(!allStatistic) {
@@ -63,18 +67,22 @@ export const calculateNumbersEveryDay = async () => {
 
 
         for (const oneStat of allStatistic) {
-            clickMonth += oneStat.clicksMonth;
-            buyMonth += oneStat.buysMonth;
-            clickAllPeriod += oneStat.clicksAllPeriod;
-            buyAllPeriod += oneStat.buysAllPeriod;
+            clickMonth += oneStat.clicksMonth || 0;
+            buyMonth += oneStat.buysMonth || 0;
+            buySumMonth += oneStat.buysSumMonth || 0;
+            clickAllPeriod += oneStat.clicksAllPeriod || 0;
+            buyAllPeriod += oneStat.buysAllPeriod || 0;
+            buySumAllPeriod += oneStat.buysSumAllPeriod || 0;
         }
         if(clickAllPeriod && buyAllPeriod) {
           allConversions = (buyAllPeriod / clickAllPeriod) * 100;
         }
         adminStatistic.buysMonth = buyMonth;
+        adminStatistic.buysSumMonth = buySumMonth;
         adminStatistic.clicksMonth = clickMonth;
         adminStatistic.clicksAllPeriod = clickAllPeriod;
         adminStatistic.buysAllPeriod = buyAllPeriod;
+        adminStatistic.buysSumAllPeriod = buySumAllPeriod;
         adminStatistic.conversionAllPeriod = allConversions.toFixed(1);
 
         await adminStatistic.save();
@@ -95,6 +103,7 @@ export const clearMonthDataAdmin = async () => {
 
       adminStatistic.buysMonth = 0;
       adminStatistic.clicksMonth = 0;
+      adminStatistic.buysSumMonth = 0;
       await adminStatistic.save();
   } catch (error) {
     console.log(error);
@@ -187,9 +196,13 @@ export const calculateChartMonth = async () => {
     const yesterdayFull = moment().subtract(1, "day").format("DD.MM.YYYY");
     const yesterday = yesterdayFull.split('.')[0];
 
+    // const yesterdayFull = '18.11.2023';
+    // const yesterday = '18';
+
     let buysNumber = 0;
     let clicksNumber = 0;
     let conversionsNumber = 0;
+    let conversionsArray = [];
     const adminChartYesterdayClickObject =
       adminStatistic.chartsMonth.clicks.filter(
         (item) => item.date == yesterday
@@ -209,14 +222,15 @@ export const calculateChartMonth = async () => {
         (item) => item.date == yesterday
       );
 
-      // const yesterdayConversionEvent = oneStat.chartsMonth.conversions.filter((item) => item.date == yesterday);
+      const yesterdayConversionEvent = oneStat.chartsMonth.conversions.filter((item) => item.date == yesterday);
+      const conversionValue = yesterdayConversionEvent[0].number;
+      conversionsArray.push(conversionValue);
       buysNumber += yesterdayBuyEvent[0].number;
       clicksNumber += yesterdayClickEvent[0].number;
     }
+    let average = conversionsArray.reduce((sum, value) => sum + value, 0) / conversionsArray.length;
+    console.log('average',average);
 
-    if (buysNumber && clicksNumber) {
-      conversionsNumber = (buysNumber / clicksNumber) * 100;
-    }
     if (adminChartYesterdayClickObject) {
       adminChartYesterdayClickObject[0].number = clicksNumber;
     }
@@ -224,7 +238,7 @@ export const calculateChartMonth = async () => {
       adminChartYesterdayBuyObject[0].number = buysNumber;
     }
     if (adminChartYesterdayConversionObject) {
-      adminChartYesterdayConversionObject[0].number = conversionsNumber.toFixed(1);
+      adminChartYesterdayConversionObject[0].number = average.toFixed(1);
     }
     await adminStatistic.save();
   } catch (error) {
@@ -238,6 +252,7 @@ export const calculateChartYear = async () => {
         const allStatistic = await PartnerStatisticModel.find();
         const adminStatistic = await AdminStatisticModel.findOne();
         let buysNumber = 0;
+        let buysQuantity = 0;
         let clicksNumber = 0;
         let conversionsNumber = 0;
         let month = moment().subtract(1, 'months').format("MM");
@@ -246,6 +261,7 @@ export const calculateChartYear = async () => {
           const buysItem =  oneStat.chartsYear.buys.filter((item) => item.date == month)
 
           buysNumber += buysItem[0].number;
+          buysQuantity += buysItem[0].quantity;
           const clicksItem =  oneStat.chartsYear.clicks.filter((item) => item.date == month)
           clicksNumber += clicksItem[0].number;
       }
@@ -253,9 +269,10 @@ export const calculateChartYear = async () => {
         const clicksAdminitem = adminStatistic.chartsYear.clicks.filter((item) => item.date == month);
         const buysAdminitem = adminStatistic.chartsYear.buys.filter((item) => item.date == month);
         const converionsAdminitem = adminStatistic.chartsYear.conversions.filter((item) => item.date == month);
-        conversionsNumber = (buysNumber / clicksNumber) * 100
+        conversionsNumber = (buysQuantity / clicksNumber) * 100
         clicksAdminitem[0].number = clicksNumber;
         buysAdminitem[0].number = buysNumber;
+        buysAdminitem[0].quantity = buysQuantity;
         converionsAdminitem[0].number = conversionsNumber.toFixed(1);
 
         await adminStatistic.save();
@@ -271,6 +288,7 @@ export const calculateChartAllYears = async () => {
     const allStatistic = await PartnerStatisticModel.find();
     const adminStatistic = await AdminStatisticModel.findOne();
     let buysNumber = 0;
+    let buysQuantity = 0;
     let clicksNumber = 0;
     let conversionsNumber = 0;
         // const previousYear = kyivTime.subtract(1, 'years').format("YYYY");
@@ -281,6 +299,7 @@ export const calculateChartAllYears = async () => {
       let partnerClicksItem = oneStat.chartsYearAllPeriod.clicks.filter((item) => item.date == previousYear);
 
       buysNumber += partnerBuysItem[0].number;
+      buysQuantity += partnerBuysItem[0].quantity;
       clicksNumber += partnerClicksItem[0].number;
 
     }
@@ -289,9 +308,10 @@ export const calculateChartAllYears = async () => {
     let actualClicksItem = adminStatistic.chartsYearAllPeriod.clicks.filter((item) => item.date == previousYear);
     let actualConversionsItem = adminStatistic.chartsYearAllPeriod.conversions.filter((item) => item.date == previousYear);
 
-    conversionsNumber = (buysNumber / clicksNumber) * 100;
+    conversionsNumber = (buysQuantity / clicksNumber) * 100;
 
     actualBuysItem[0].number = buysNumber;
+    actualBuysItem[0].quantity = buysQuantity;
     actualClicksItem[0].number = clicksNumber;
     actualConversionsItem[0].number = conversionsNumber.toFixed(1);
 

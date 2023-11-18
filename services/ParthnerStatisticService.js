@@ -9,76 +9,220 @@ const currentYear = kyivTime.format("YYYY");
 
 const codes = [
   {
-    codesId: "0",
-    date: "07.11.2023",
-    value: 10,
-    code: "nb6bu411p",
-  },
-  {
     codesId: "1",
-    date: "07.11.2023",
+    date: "10.11.2023",
     value: 10,
-    code: "nb6bu411p",
+    code: "hc1fh718t",
   },
   {
     codesId: "2",
-    date: "08.11.2023",
+    date: "10.11.2023",
     value: 10,
-    code: "nb6bu411p",
+    code: "q944k897i",
   },
   {
     codesId: "3",
-    date: "09.11.2023",
+    date: "10.11.2023",
     value: 10,
-    code: "nb6bu411p",
+    code: "q944k897i",
   },
   {
     codesId: "4",
-    date: "10.11.2023",
+    date: "11.11.2023",
     value: 10,
-    code: "nb6bu411p",
+    code: "hc1fh718t",
   },
   {
     codesId: "5",
-    date: "10.11.2023",
+    date: "11.11.2023",
     value: 10,
-    code: "nb6bu411p",
+    code: "q944k897i",
   },
   {
     codesId: "6",
-    date: "11.11.2023",
+    date: "12.11.2023",
     value: 10,
-    code: "nb6bu411p",
+    code: "hc1fh718t",
   },
   {
     codesId: "7",
     date: "12.11.2023",
     value: 10,
-    code: "nb6bu411p",
+    code: "q944k897i",
   },
   {
     codesId: "8",
     date: "13.11.2023",
     value: 10,
-    code: "nb6bu411p",
+    code: "hc1fh718t",
   },
   {
     codesId: "9",
     date: "13.11.2023",
     value: 10,
-    code: "nb6bu411p",
+    code: "q944k897i",
   },
   {
     codesId: "10",
-    date: "14.11.2023",
+    date: "13.11.2023",
     value: 10,
-    code: "nb6bu411p",
+    code: "hc1fh718t",
   },
   {
     codesId: "11",
+    date: "13.11.2023",
+    value: 10,
+    code: "q944k897i",
+  },
+  {
+    codesId: "12",
+    date: "13.11.2023",
+    value: 10,
+    code: "q944k897i",
+  },
+  {
+    codesId: "13",
+    date: "14.11.2023",
+    value: 10,
+    code: "hc1fh718t",
+  },
+  {
+    codesId: "14",
+    date: "14.11.2023",
+    value: 10,
+    code: "q944k897i",
+  },
+  {
+    codesId: "15",
+    date: "15.11.2023",
+    value: 10,
+    code: "hc1fh718t",
+  },
+  {
+    codesId: "16",
+    date: "15.11.2023",
+    value: 10,
+    code: "q944k897i",
+  },
+  {
+    codesId: "17",
+    date: "15.11.2023",
+    value: 10,
+    code: "hc1fh718t",
+  },
+  {
+    codesId: "18",
+    date: "15.11.2023",
+    value: 10,
+    code: "q944k897i",
+  },
+  {
+    codesId: "19",
+    date: "15.11.2023",
+    value: 10,
+    code: "hc1fh718t",
+  },
+  {
+    codesId: "20",
     date: "16.11.2023",
     value: 10,
-    code: "nb6bu411p",
+    code: "q944k897i",
+  },
+  {
+    codesId: "21",
+    date: "16.11.2023",
+    value: 10,
+    code: "hc1fh718t",
+  },
+  {
+    codesId: "22",
+    date: "16.11.2023",
+    value: 10,
+    code: "q944k897i",
+  },
+  {
+    codesId: "23",
+    date: "16.11.2023",
+    value: 10,
+    code: "hc1fh718t",
+  },
+  {
+    codesId: "24",
+    date: "16.11.2023",
+    value: 10,
+    code: "q944k897i",
+  },
+  {
+    codesId: "25",
+    date: "16.11.2023",
+    value: 10,
+    code: "hc1fh718t",
+  },
+  {
+    codesId: "26",
+    date: "16.11.2023",
+    value: 10,
+    code: "q944k897i",
+  },
+  {
+    codesId: "27",
+    date: "16.11.2023",
+    value: 10,
+    code: "hc1fh718t",
+  },
+  {
+    codesId: "28",
+    date: "16.11.2023",
+    value: 10,
+    code: "hc1fh718t",
+  },
+  {
+    codesId: "100",
+    date: "17.11.2023",
+    value: 10,
+    code: "q944k897i",
+  },
+  {
+    codesId: "101",
+    date: "17.11.2023",
+    value: 10,
+    code: "q944k897i",
+  },
+  {
+    codesId: "102",
+    date: "17.11.2023",
+    value: 10,
+    code: "q944k897i",
+  },
+  {
+    codesId: "103",
+    date: "17.11.2023",
+    value: 10,
+    code: "hc1fh718t",
+  },
+  {
+    codesId: "104",
+    date: "17.11.2023",
+    value: 10,
+    code: "hc1fh718t",
+  },
+  {
+    codesId: "105",
+    date: "18.11.2023",
+    value: 10,
+    code: "y155l730d",
+  },
+  {
+    codesId: "106",
+    date: "18.11.2023",
+    value: 10,
+    code: "hc1fh718t",
+  },
+  {
+    codesId: "107",
+    date: "18.11.2023",
+    value: 10,
+    code: "q944k897i",
   },
 ];
 
@@ -117,91 +261,89 @@ export const createDefaultEvent = async () => {
   }
 }
 
-// export const handleBuy = async () => {
-//   try {
-//     console.log('handleBuy',handleBuy);
-//     const response = await fetch('https://makenude.ai/api/affiliate?token=49114cade64b696c26hf854d068c374ac1ab3d4');
-//     const responseBuys = await response.json();
-
-//     const resoultArray =  [];
-//     responseBuys.subscriptions.forEach((item) => {
-//       if(item.promocode) {
-//         const date = moment(item.created_at);
-//         const formattedDate = date.format("DD.MM.YYYY");
-//         resoultArray.push({
-//           codesId: item.created_at,
-//           date: formattedDate,
-//           value: item.price,
-//           code: item.promocode,
-//         })
-//       }
-//     });
-
-//     if(resoultArray.length) {
-//     for (const item of resoultArray) {
-//       const partner = await UserModel.findOne({ promotionalCode: item.code });
-//       if (!partner) {
-//         console.log("No partner found for the code:", item.code);
-//         continue;
-//       }
-
-//       const partnerId = partner._id;
-//       const statistic = await PartnerStatisticModel.findOne({ partnerId });
-
-//       if (!statistic) {
-//         console.log("No statistics found for partner:", partnerId);
-//         continue;
-//       }
-
-//       const uniqueArrayId = [
-//         ...new Set(statistic.event.flatMap(parent => parent.buys.map(child => child.buyId)))
-//       ];
-
-//       const yesterday = moment().subtract(1, "day").format("DD.MM.YYYY");
-//       const yesterdayEvent = statistic.event.filter(
-//         (item) => item.date == yesterday
-//       );
-//       if(!yesterdayEvent.length && !uniqueArrayId.includes(item.codesId)) {
-//         statistic.event.push({
-//           date: yesterday,
-//           clicks: [],
-//           buys: [{
-//             date: yesterday,
-//             buyId: item.codesId
-//           }]
-//         })
-//       }
-
-//       console.log('yesterdayEvent',yesterdayEvent);
-
-//       if(!uniqueArrayId.includes(item.codesId) && yesterdayEvent.length) {
-//         yesterdayEvent[0].buys.push({
-//           date: yesterday,
-//           buyId: item.codesId
-//         })
-//       }
-
-//       let balanceValue = partner.balance;
-
-//       if(!uniqueArrayId.includes(item.codesId)) {
-//         balanceValue += item.value * (partner.bonus / 100);
-//         // console.log('balanceValue',balanceValue);
-//       }
-//       console.log('balanceValue',balanceValue);
-//       if(partner.balance != balanceValue) {
-//         console.log('work not equal');
-//         partner.balance = balanceValue;
-//       await partner.save();
-//       }
-//       // await statistic.save();
-//     }
-//     }
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
 export const handleBuy = async () => {
+  try {
+    const response = await fetch('https://makenude.ai/api/affiliate?token=49114cade64b696c26hf854d068c374ac1ab3d4');
+    const responseBuys = await response.json();
+
+    const resoultArray =  [];
+    responseBuys.subscriptions.forEach((item) => {
+      if(item.promocode) {
+        const date = moment(item.created_at);
+        const formattedDate = date.format("DD.MM.YYYY");
+        resoultArray.push({
+          codesId: item.created_at,
+          date: formattedDate,
+          value: item.price,
+          code: item.promocode,
+        })
+      }
+    });
+
+    if(resoultArray.length) {
+    for (const item of resoultArray) {
+      const partner = await UserModel.findOne({ promotionalCode: item.code });
+      if (!partner) {
+        console.log("No partner found for the code:", item.code);
+        continue;
+      }
+
+      const partnerId = partner._id;
+      const statistic = await PartnerStatisticModel.findOne({ partnerId });
+
+      if (!statistic) {
+        console.log("No statistics found for partner:", partnerId);
+        continue;
+      }
+
+      const uniqueArrayId = [
+        ...new Set(statistic.event.flatMap(parent => parent.buys.map(child => child.buyId)))
+      ];
+
+      const yesterday = moment().subtract(1, "day").format("DD.MM.YYYY");
+      const yesterdayEvent = statistic.event.filter(
+        (item) => item.date == yesterday
+      );
+      if(!yesterdayEvent.length && !uniqueArrayId.includes(item.codesId)) {
+        statistic.event.push({
+          date: yesterday,
+          clicks: [],
+          buys: [{
+            date: yesterday,
+            value: item.value,
+            buyId: item.codesId
+          }]
+        })
+      }
+
+      console.log('yesterdayEvent',yesterdayEvent);
+
+      if(!uniqueArrayId.includes(item.codesId) && yesterdayEvent.length) {
+        yesterdayEvent[0].buys.push({
+          date: yesterday,
+          buyId: item.codesId
+        })
+      }
+
+      let balanceValue = partner.balance;
+
+      if(!uniqueArrayId.includes(item.codesId)) {
+        balanceValue += item.value * (partner.bonus / 100);
+      }
+      console.log('balanceValue',balanceValue);
+      if(partner.balance != balanceValue) {
+        partner.balance = balanceValue.toFixed(1);;
+      // await partner.save();
+      }
+      // await statistic.save();
+    }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const handleBuyTest = async () => {
   try {
     for (const item of codes) {
       const partner = await UserModel.findOne({ promotionalCode: item.code });
@@ -223,7 +365,7 @@ export const handleBuy = async () => {
       ];
 
       const yesterday = moment().subtract(1, "day").format("DD.MM.YYYY");
-      // const yesterday = '16.11.2023';
+      // const yesterday = '18.11.2023';
 
 
       const yesterdayEvent = statistic.event.filter(
@@ -235,6 +377,7 @@ export const handleBuy = async () => {
           clicks: [],
           buys: [{
             date: yesterday,
+            value: item.value,
             buyId: item.codesId
           }]
         })
@@ -243,6 +386,7 @@ export const handleBuy = async () => {
       if(!uniqueArrayId.includes(item.codesId) && yesterdayEvent.length) {
         yesterdayEvent[0].buys.push({
           date: yesterday,
+          value: item.value,
           buyId: item.codesId
         })
       }
@@ -253,7 +397,7 @@ export const handleBuy = async () => {
         balanceValue += item.value * (partner.bonus / 100);
       }
       if(partner.balance != balanceValue) {
-        partner.balance = balanceValue;
+        partner.balance = balanceValue.toFixed(1);
       await partner.save();
       }
       await statistic.save();
@@ -284,8 +428,10 @@ export const handleCalculateNumbersStatisticsPartner = async () => {
       }
 
       // Обчислення для покупок
-      let allBuys = statistic.buysAllPeriod || 0; // Додавання || 0 для застереження undefined значення
+      let allBuys = statistic.buysAllPeriod || 0;
       let monthBuys = statistic.buysMonth || 0;
+      let allSumBuys = statistic.buysSumMonth || 0;
+      let monthSumBuys = statistic.buysSumAllPeriod || 0;
 
       // Обчислення для кліків
       let allClicks = statistic.clicksAllPeriod || 0;
@@ -293,6 +439,7 @@ export const handleCalculateNumbersStatisticsPartner = async () => {
       let monthClicks = statistic.clicksMonth || 0;
 
       const yesterday = moment().subtract(1, "day").format("DD.MM.YYYY");
+      // const yesterday = '18.11.2023';
       const yesterdayEvent = statistic.event.filter(
         (item) => item.date == yesterday
       );
@@ -302,10 +449,16 @@ export const handleCalculateNumbersStatisticsPartner = async () => {
         continue;
       }
 
+      const buysSum = yesterdayEvent[0].buys.reduce((acc, current) => acc + current.value, 0);
+
+      console.log('buysSum',buysSum);
+
       // Для покупок
       let numberBuys = yesterdayEvent[0].buys.length;
       allBuys += numberBuys;
       monthBuys += numberBuys;
+      allSumBuys += buysSum;
+      monthSumBuys += buysSum;
 
       // Для кліків
       let numberClicks = yesterdayEvent[0].clicks.length;
@@ -318,6 +471,8 @@ export const handleCalculateNumbersStatisticsPartner = async () => {
       // Оновлення статистики
       statistic.buysAllPeriod = allBuys;
       statistic.buysMonth = monthBuys;
+      statistic.buysSumAllPeriod = allSumBuys;
+      statistic.buysSumMonth = monthSumBuys;
       statistic.clicksAllPeriod = allClicks;
       statistic.clicksMonth = monthClicks;
       statistic.conversionAllPeriod = allConversions.toFixed(1);
@@ -332,6 +487,7 @@ export const handleCalculateNumbersStatisticsPartner = async () => {
 // Очищення числових значень - місяць
 export const clearMonthDataAllParthner = async () => {
   try {
+    // const allPartner = (await UserModel.find()).splice(1);
     const allPartner = (await UserModel.find()).splice(1);
     for (const user of allPartner) {
       if (!user._id) {
@@ -347,6 +503,7 @@ export const clearMonthDataAllParthner = async () => {
       }
       statistic.buysMonth = 0;
       statistic.clicksMonth = 0;
+      statistic.buysSumMonth = 0;
       await statistic.save();
     }
   } catch (error) {
@@ -397,14 +554,15 @@ export const fillingCartMonth = async () => {
     moment.tz.setDefault("Europe/Kiev");
 
     // Отримайте вчорашню дату
-    // let yesterdayFull = moment().subtract(1, "day").format("DD.MM.YYYY");
-    // const yesterday = yesterdayFull.split('.')[0];
+    let yesterdayFull = moment().subtract(1, "day").format("DD.MM.YYYY");
+    const yesterday = yesterdayFull.split('.')[0];
 
-    let yesterdayFull = '16.11.2023';
-    const yesterday = '16';
+    // let yesterdayFull = '18.11.2023';
+    // const yesterday = '18';
 
 
-    const allPartner = await UserModel.find();
+    // const allPartner = await UserModel.find();
+    const allPartner = (await UserModel.find()).splice(1);
 
     for (const user of allPartner) {
       if (!user._id) {
@@ -434,6 +592,7 @@ export const fillingCartMonth = async () => {
 
       const clicksNumber = yesterdayEvent[0].clicks.length;
       const buysNumber = yesterdayEvent[0].buys.length;
+      const buysSumnumber = yesterdayEvent[0].buys.reduce((acc, current) => acc + current.value, 0);
 
       let conversionsNumber = 0;
 
@@ -456,7 +615,8 @@ export const fillingCartMonth = async () => {
       );
 
         entryToUpdateClicks.number = clicksNumber;
-        entryToUpdateBuys.number = buysNumber;
+        entryToUpdateBuys.number = buysSumnumber;
+        entryToUpdateBuys.quantity = buysNumber;
         entryToUpdateConversions.number = conversionsNumber.toFixed(1);
 
       // Після змін, зберігаємо оновлену статистику
@@ -482,7 +642,7 @@ export const createDefaultChartYear = async () => {
 
   const allPartner = (await UserModel.find()).splice(1);
 
-  for (const user of allPartner) {
+  for (const user of allPartner) {https://cloud.mongodb.com/v2/65394a1225fe8c34faedfabf#/triggers
     if (!user._id) {
       console.log("No partner found for the code:", user._id);
       continue;
@@ -531,10 +691,15 @@ export const calculataLastMonthToYearChart = async () => {
       statistic.chartsMonth.buys.forEach((buy) => {
         buysCurrentMonth += buy.number;
       });
+      const conversionLastMonthArray = statistic.chartsMonth.buys;
+
+      const quantitybuysCurrentMonth = conversionLastMonthArray.reduce((acc, current) => acc + current.quantity, 0);
 
       if (clicksCurrentMonth && buysCurrentMonth) {
-        conversionCurrentMonth = (buysCurrentMonth / clicksCurrentMonth) * 100;
+        conversionCurrentMonth = ((quantitybuysCurrentMonth / clicksCurrentMonth) * 100).toFixed(1);
       }
+
+
 
       const currentMonthBuysItem = statistic.chartsYear.buys.find((item) => {
         return item.date === month;
@@ -547,8 +712,9 @@ export const calculataLastMonthToYearChart = async () => {
       });
 
       currentMonthBuysItem.number = buysCurrentMonth;
+      currentMonthBuysItem.quantity = quantitybuysCurrentMonth;
       currentMonthClicksItem.number = clicksCurrentMonth;
-      currentMonthConversionsItem.number = ((buysCurrentMonth / clicksCurrentMonth) * 100).toFixed(1);
+      currentMonthConversionsItem.number = conversionCurrentMonth;
 
       await statistic.save();
     }
@@ -617,6 +783,7 @@ export const calculateChartAllYears = async () => {
 
       let clicksCurrentYear = statistic.chartsYear.clicks.reduce((acc, current) => acc + current.number, 0);
       let buysCurrentYear = statistic.chartsYear.buys.reduce((acc, current) => acc + current.number, 0);
+      let buysQiantityCurrentYear = statistic.chartsYear.buys.reduce((acc, current) => acc + current.quantity, 0);
       let conversionCurrentYear = 0;
 
       let actualBuysItem = statistic.chartsYearAllPeriod.buys.filter((item) => item.date == previousYear);
@@ -624,10 +791,11 @@ export const calculateChartAllYears = async () => {
       let actualConversionsItem = statistic.chartsYearAllPeriod.conversions.filter((item) => item.date == previousYear);
 
       if(buysCurrentYear && clicksCurrentYear) {
-        conversionCurrentYear = (buysCurrentYear / clicksCurrentYear) * 100;
+        conversionCurrentYear = (buysQiantityCurrentYear / clicksCurrentYear) * 100;
       }
 
       actualBuysItem[0].number = buysCurrentYear;
+      actualBuysItem[0].quantity = buysQiantityCurrentYear;
       actualClicksItem[0].number = clicksCurrentYear;
       actualConversionsItem[0].number = conversionCurrentYear.toFixed(1);
 
@@ -677,8 +845,8 @@ export const createChartSevenDays = async () => {
               chartLastSevenDays.buys[index].number = event.buys.length;
               chartLastSevenDays.clicks[index].number = event.clicks.length;
 
-              if(event.buys.lengt && event.clicks.length) {
-                chartLastSevenDays.conversions[index].number = (event.buys.length / event.clicks.length) * 100;
+              if(event.buys.length && event.clicks.length) {
+                chartLastSevenDays.conversions[index].number = ((event.buys.length / event.clicks.length) * 100).toFixed(1);
               } else if (event.buys.length > 0 && event.clicks.length == 0) {
                 chartLastSevenDays.conversions[index].number = 100;
               }

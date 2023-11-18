@@ -26,9 +26,11 @@ const jobEveryDayStage4 = new CronJob('13 00 * * *', () => {
 }, null, true, 'Europe/Kiev');
 
 // Раз на місяць
+
 const jobEveryMonthStage1 = new CronJob('01 00 02 * *', () => {
   ParthnerStatisticService.clearMonthDataAllParthner();
 }, null, true, 'Europe/Kiev');
+
 
 const jobEveryMonthStage2 = new CronJob('02 00 02 * *', () => {
   ParthnerStatisticService.calculataLastMonthToYearChart();
@@ -40,11 +42,11 @@ const jobEveryMonthStage3 = new CronJob('03 00 02 * *', () => {
 
 // Раз на рік
 
-const jobEveryYearStage1 = new CronJob('16 00 00 2 1 *', () => {
+const jobEveryYearStage1 = new CronJob('18 00 00 2 1 *', () => {
   ParthnerStatisticService.calculateChartAllYears();
 }, null, true, 'Europe/Kiev');
 
-const jobEveryYearStage2 = new CronJob('17 00 00 2 1 *', () => {
+const jobEveryYearStage2 = new CronJob('19 00 00 2 1 *', () => {
   ParthnerStatisticService.createDefaultChartYear();
 }, null, true, 'Europe/Kiev');
 
@@ -101,7 +103,7 @@ export const createPartnerStatistic = async (req, res) => {
         statistic.event.push(newObject)
       }
       await statistic.save();
-      res.redirect('https://www.google.com/');
+      res.redirect('https://makenude.ai/');
 
     } catch(error) {
       console.log(error);
@@ -112,5 +114,5 @@ export const createPartnerStatistic = async (req, res) => {
   }
 
   // setTimeout(() => {
-  //   ParthnerStatisticService.createDefaultChartYear();
+  //   ParthnerStatisticService.handleBuy();
   // },5000)

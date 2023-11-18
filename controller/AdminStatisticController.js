@@ -32,11 +32,11 @@ const jobEveryMonthStage4 = new CronJob('04 00 02 * *', () => {
   
   // Раз на рік
   
-  const jobEveryYearStage3 = new CronJob('17 00 00 2 1 *', () => {
+  const jobEveryYearStage3 = new CronJob('20 00 00 2 1 *', () => {
     AdminStatisticService.calculateChartAllYears();
   }, null, true, 'Europe/Kiev');
 
-  const jobEveryYearStage4 = new CronJob('18 00 00 2 1 *', () => {
+  const jobEveryYearStage4 = new CronJob('21 00 00 2 1 *', () => {
     AdminStatisticService.createDefaultChartYear();
   }, null, true, 'Europe/Kiev');
   

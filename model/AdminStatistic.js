@@ -13,9 +13,17 @@ const AdminStatisticSchema = new mongoose.Schema(
           type: Number,
           default: 0,
         },
+        buysSumNumber: {
+          type: Number,
+          default: 0,
+        },
       },
     ],
     buysMonth: {
+      type: Number,
+      default: 0,
+    },
+    buysSumMonth: {
       type: Number,
       default: 0,
     },
@@ -28,6 +36,10 @@ const AdminStatisticSchema = new mongoose.Schema(
       default: 0,
     },
     buysAllPeriod: {
+      type: Number,
+      default: 0,
+    },
+    buysSumAllPeriod: {
       type: Number,
       default: 0,
     },
@@ -46,6 +58,10 @@ const AdminStatisticSchema = new mongoose.Schema(
         {
           date: String,
           number: Number,
+          quantity: {
+            type: Number,
+            default: 0
+          }
         },
       ],
       clicks: [
@@ -66,6 +82,10 @@ const AdminStatisticSchema = new mongoose.Schema(
         {
           date: String,
           number: Number,
+          quantity: {
+            type: Number,
+            default: 0
+          }
         },
       ],
       clicks: [
@@ -86,6 +106,10 @@ const AdminStatisticSchema = new mongoose.Schema(
         {
           date: String,
           number: Number,
+          quantity: {
+            type: Number,
+            default: 0
+          }
         },
       ],
       clicks: [
