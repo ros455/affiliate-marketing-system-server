@@ -321,6 +321,7 @@ export const handleBuy = async () => {
       if(!uniqueArrayId.includes(item.codesId) && yesterdayEvent.length) {
         yesterdayEvent[0].buys.push({
           date: yesterday,
+          value: item.value,
           buyId: item.codesId
         })
       }
