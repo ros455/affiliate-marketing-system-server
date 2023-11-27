@@ -197,7 +197,7 @@ export const getMe = async (req, res) => {
 
   export const searchUsers = async (req, res) => {
     try {
-      const { page = 1, limit = 2, search = '' } = req.query;
+      const { page, limit, search } = req.query;
   
       const skip = (page - 1) * limit;
       // Виключення адміністраторів з результатів пошуку
@@ -371,6 +371,91 @@ export const getMe = async (req, res) => {
       });
     }
   }
+
+  export const updateWalletAddress = async (req, res) => {
+    try {
+      const {address, id} = req.body;
+
+      const user = await UserModel.findById(id);
+
+      if(!user) {
+        return res.status(404).json({
+          message: 'User not found'
+        });
+      }
+      user.walletAddress = address;
+      user.save();
+
+      res.json(user)
+    } catch(error) {
+      console.log(error);
+      res.status(500).json({
+        message: 'Access denied'
+      });
+    }
+  }
+
+  // export const createSuccessfullyHistoryEvent = async (req, res) => {
+  //   try {
+  //     const {sum, id} = req.body;
+
+  //     const user = await UserModel.findById(id);
+
+  //     if(!user) {
+  //       return res.status(404).json({
+  //         message: 'User not found'
+  //       });
+  //     }
+  //     user.historyOfWithdrawals.push({
+  //       sum,
+  //       date: formattedDate,
+  //       status: 'Successfully'
+  //     })
+
+  //     const newBalance = user.balance - sum;
+
+  //     user.balance = newBalance;
+
+  //     user.save();
+
+  //     res.json(user)
+
+  //   } catch(error) {
+  //     console.log(error);
+  //     res.status(500).json({
+  //       message: 'Access denied'
+  //     });
+  //   }
+  // }
+  
+  // export const createCancelledHistoryEvent = async (req, res) => {
+  //   try {
+  //     const {sum, id} = req.body;
+
+  //     const user = await UserModel.findById(id);
+
+  //     if(!user) {
+  //       return res.status(404).json({
+  //         message: 'User not found'
+  //       });
+  //     }
+  //     user.historyOfWithdrawals.push({
+  //       sum,
+  //       date: formattedDate,
+  //       status: 'Cancelled'
+  //     })
+
+  //     user.save();
+
+  //     res.json(user)
+
+  //   } catch(error) {
+  //     console.log(error);
+  //     res.status(500).json({
+  //       message: 'Access denied'
+  //     });
+  //   }
+  // }
 
   // setTimeout(() => {
   //   PartnerStatistic.generateRandomLink();

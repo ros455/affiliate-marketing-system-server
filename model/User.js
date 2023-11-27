@@ -41,6 +41,15 @@ const UserSchema = new mongoose.Schema({
         default: true,
         require: true,
     },
+    walletAddress: {
+        type: String,
+        default: ''
+    },
+    historyOfWithdrawals: [{
+        sum: Number,
+        date: String,
+        status: String
+    }],
     statistics: { type: mongoose.Schema.Types.ObjectId, ref: 'PartnerStatistic' },
 }, { timestamps: true });
 
