@@ -6,7 +6,6 @@ dotenv.config();
 
 export default async function (req, res, next) {
   const token = (req.headers.authorization || '').replace(/Bearer\s?/, '');
-  console.log('token',token);
 
   if (token) {
     try {

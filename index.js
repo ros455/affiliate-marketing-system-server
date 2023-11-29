@@ -4,25 +4,24 @@ import cors from "cors";
 import dotenv from "dotenv";
 import UserRouter from './router/UserRouter.js';
 import StatisticRouter from './router/StatisticRouter.js';
-import moment from 'moment-timezone';
+import AdminStatisticRouter from './router/AdminStatisticRouter.js';
+import PaymantsMethodRouter from './router/PaymantsMethodRouter.js';
+import PaymentRequestRouter from './router/PaymentRequestRouter.js';
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  credentials: true,
+  origin: [
+    'http://localhost:3000',
+    'https://affiliate-marketing-system-client.vercel.app'
+  ]
+}));
 app.use(express.json());
+app.use('/api/uploads', express.static('uploads'));
 
-const kyivTime = moment().tz('Europe/Kiev');
-const startTime = moment(kyivTime).set({ hour: 1, minute: 0, second: 0 }).valueOf();
-const endTime = moment(kyivTime).set({ hour: 2, minute: 0, second: 0 }).valueOf();
-const currentTime = Date.now();
-
-setInterval(() => {
-  if (currentTime >= startTime && currentTime <= endTime) {
-    
-  }
-}, 900000);
 
 mongoose.connect(process.env.DB_URL).then(() => {
     console.log("DB Start");
@@ -30,6 +29,9 @@ mongoose.connect(process.env.DB_URL).then(() => {
 
   app.use('/api',UserRouter);
   app.use('/api',StatisticRouter);
+  app.use('/api',AdminStatisticRouter);
+  app.use('/api',PaymantsMethodRouter);
+  app.use('/api',PaymentRequestRouter);
   
 
   app.listen(process.env.PORT, () => {

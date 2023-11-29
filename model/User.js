@@ -25,7 +25,7 @@ const UserSchema = new mongoose.Schema({
     },
     bonus: {
         type: Number,
-        default: 0
+        default: 1
     },
     balance: {
         type: Number,
@@ -41,6 +41,15 @@ const UserSchema = new mongoose.Schema({
         default: true,
         require: true,
     },
+    walletAddress: {
+        type: String,
+        default: ''
+    },
+    historyOfWithdrawals: [{
+        sum: Number,
+        date: String,
+        status: String
+    }],
     statistics: { type: mongoose.Schema.Types.ObjectId, ref: 'PartnerStatistic' },
 }, { timestamps: true });
 
