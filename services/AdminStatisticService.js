@@ -323,27 +323,73 @@ export const calculateChartAllYears = async () => {
 
       // Створюємо 7 денний графік
 
+  // export const createChartSevenDays = async () => {
+  //   try {
+  //     const adminStatistic = await AdminStatisticModel.findOne(); // Ця змінна не використовується у вашому коді
+  //     const allStatistic = await PartnerStatisticModel.find();
+  
+  //     // Створюємо новий масив з семи елементів, кожен з яких має date та number
+  //     let newArray = new Array(7).fill(null).map(() => ({ date: '', number: 0 }));
+  
+  //     // Перебираємо всі статистики
+  //     for (const oneStat of allStatistic) {
+  //       if (!oneStat) {
+  //         console.log('User not found');
+  //         continue;
+  //       }
+
+  //       console.log('oneStat.lastSevenDays.clicks',oneStat.lastSevenDays.clicks);
+  
+  //       // Оновлюємо дані для кожного дня
+  //       oneStat.lastSevenDays.clicks.forEach((dailyStat, index) => {
+  //         console.log('dailyStat',dailyStat);
+  //         newArray[index].number += dailyStat.number;
+  //         newArray[index].date = dailyStat.date; // Припускаючи, що дата однакова для всіх статистик і її треба встановити тільки один раз
+  //       });
+  //     }
+  //     adminStatistic.lastSevenDaysConversions = newArray;
+  //     console.log('newArray',newArray);
+  //     // await adminStatistic.save();
+  
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   export const createChartSevenDays = async () => {
     try {
       const adminStatistic = await AdminStatisticModel.findOne(); // Ця змінна не використовується у вашому коді
       const allStatistic = await PartnerStatisticModel.find();
   
-      // Створюємо новий масив з семи елементів, кожен з яких має date та number
-      let newArray = new Array(7).fill(null).map(() => ({ date: '', number: 0 }));
+      // Генерація масиву дат за останні 7 днів у форматі "DD" (тільки число місяця)
+      let lastSevenDays = [];
+      for (let i = 0; i < 7; i++) {
+        let date = moment().subtract(i, 'days').format('DD');
+        lastSevenDays.push(date);
+      }
   
-      // Перебираємо всі статистики
+      let newArray = lastSevenDays.map(date => ({ date, number: 0 }));
+  
+      // Збір статистики
       for (const oneStat of allStatistic) {
         if (!oneStat) {
           console.log('User not found');
           continue;
         }
   
-        // Оновлюємо дані для кожного дня
-        oneStat.lastSevenDays.clicks.forEach((dailyStat, index) => {
-          newArray[index].number += dailyStat.number;
-          newArray[index].date = dailyStat.date; // Припускаючи, що дата однакова для всіх статистик і її треба встановити тільки один раз
+        oneStat.lastSevenDays.clicks.forEach((dailyStat) => {
+          // Якщо dailyStat.date надходить у невизнаному форматі, його потрібно перетворити
+          // Наприклад, якщо dailyStat.date є у форматі "DD", використовуйте таке перетворення
+          let formattedDate = moment(dailyStat.date, "DD").format('DD');
+          let index = lastSevenDays.indexOf(formattedDate);
+          if (index !== -1) {
+            newArray[index].number += dailyStat.number;
+          }
         });
       }
+  
+      console.log('newArray', newArray);
+      // Тут можна зберегти оновлену статистику
       adminStatistic.lastSevenDaysConversions = newArray;
       await adminStatistic.save();
   
@@ -351,3 +397,4 @@ export const calculateChartAllYears = async () => {
       console.log(error);
     }
   };
+  

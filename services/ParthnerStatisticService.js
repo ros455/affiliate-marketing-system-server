@@ -835,7 +835,7 @@ export const createChartSevenDays = async () => {
       }
 
       const lastSevenDays = statistic.event.slice(-7);
-
+      console.log('lastSevenDays',lastSevenDays.length);
       if(lastSevenDays.length != 7) {
         const lastEvent = statistic.event;
         const chartLastSevenDays = statistic.lastSevenDays;
@@ -960,8 +960,6 @@ export const createDefaultChartAllYearsOnePartner = async (id) => {
       number: 0,
     });
   });
-
-
 
     const statistic = await PartnerStatisticModel.findById(id);
 
