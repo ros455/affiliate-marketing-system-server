@@ -16,7 +16,9 @@ app.use(cors({
   credentials: true,
   origin: [
     'http://localhost:3000',
-    'https://affiliate-marketing-system-client.vercel.app'
+    'https://affiliate-marketing-system-client.vercel.app',
+    'http://affiliate.makenude.ai',
+    'http://185.174.101.119'
   ]
 }));
 app.use(express.json());
