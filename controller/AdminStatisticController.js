@@ -143,5 +143,5 @@ export const getOneUserForAdmin = async (req, res) => {
   }
 }
 // setTimeout(() => {
-//   AdminStatisticService.createChartSevenDays();
+//   AdminStatisticService.createDefaultChartYear();
 // },5000)
