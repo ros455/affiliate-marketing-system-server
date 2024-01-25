@@ -86,8 +86,6 @@ export const getAllPaymantItemForUser = async (req,res) => {
               });
         }
 
-        console.log('date',data);
-
         res.json(data);
     } catch(error) {
         console.log(error);
@@ -139,7 +137,6 @@ export const cancelledRequest = async (req,res) => {
     try {
         const {requestId} = req.body;
         const request = await PaymentRequestModel.findById(requestId);
-        console.log('request',request);
         if(!request) {
             res.status(404).json({
                 message: 'Not found'

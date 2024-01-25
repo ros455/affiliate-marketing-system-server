@@ -36,6 +36,14 @@ mongoose.connect(process.env.DB_URL).then(() => {
   app.use('/api',PaymantsMethodRouter);
   app.use('/api',PaymentRequestRouter);
   app.use('/api',CreativesRouter);
+
+  // fetch('https://makenude.ai/api/affiliate?token=49114cade64b696c26hf854d068c374ac1ab3d4')
+  // .then((res) => {
+  //   return res.json();
+  // })
+  // .then((res) => {
+  //   console.log('res', res);
+  // })
   
 
   app.listen(process.env.PORT, () => {

@@ -82,7 +82,6 @@ export const createPartnerStatistic = async (req, res) => {
       }
       
       const code = partner.promotionalCode; 
-      console.log('code',code);
 
       const partnerId = partner._id;
       const statistic = await PartnerStatisticModel.findOne({partnerId});

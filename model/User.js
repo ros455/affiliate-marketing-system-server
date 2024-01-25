@@ -50,6 +50,10 @@ const UserSchema = new mongoose.Schema({
         date: String,
         status: String
     }],
+    passwordRecovery: {
+        type: Boolean,
+        default: false
+    },
     statistics: { type: mongoose.Schema.Types.ObjectId, ref: 'PartnerStatistic' },
 }, { timestamps: true });
 

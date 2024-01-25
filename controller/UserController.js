@@ -6,10 +6,9 @@ import * as ParthnerStatisticService from '../services/ParthnerStatisticService.
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import moment from 'moment-timezone';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
 const kyivTime = moment().tz('Europe/Kiev');
 const formattedDate = kyivTime.format('DD.MM.YYYY');
+const clientUrl = 'https://affiliate.makenude.ai'
 
 export const createPartnerStatistic = async (userId) => {
   try {
@@ -62,17 +61,18 @@ export const register = async (req, res) => {
         const statistics = await createPartnerStatistic(user._id);
         user.statistics = statistics._id;
         user.link = link;
+        user.disabled = true;
         user.promotionalCode = promotionalCode;
         await user.save();
-
-        // if(user) {
-        //   createPartnerStatistic(user._id)
-        // }
 
         const token = jwt.sign({ id: user._id }, process.env.TOKEN_KEY, { expiresIn: '30d' });
 
         const { password: hashedPassword, ...userData } = user.toObject();
-        
+
+        if(user) {
+          Service.senMailMessage(email, user._id, user.name)
+        }
+
         res.json({ ...userData, token });
 
     } catch (error) {
@@ -86,7 +86,7 @@ export const login = async (req, res) => {
         const user = await UserModel.findOne({email: req.body.email});
         if(!user) {
             return res.status(404).json({
-                message: 'User not found',
+                message: 'Email wrong',
             })
         }
 
@@ -100,7 +100,7 @@ export const login = async (req, res) => {
 
         if(!isValidPass) {
             return res.status(400).json({
-                message: 'Password or email wrong',
+                message: 'Password wrong',
             })
         }
 
@@ -115,6 +115,162 @@ export const login = async (req, res) => {
         await user.save();
 
         res.json({...userData, token})
+    } catch(e) {
+        console.log(e);
+    }
+}
+
+export const sendEmailForResetPassword = async (req, res) =>  {
+  try {
+    const {email} = req.body;
+
+    const user = await UserModel.findOne({email});
+
+    if(!user) {
+      return res.status(404).json({
+        message: 'User not found',
+    })
+    }
+
+    const response = await Service.senMailMessageResetPassword(email, user._id, user.name);
+
+    if(response) {
+      user.passwordRecovery = true;
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      message: 'Message sending to email',
+  })
+
+  } catch(e) {
+    console.log(e);
+  }
+}
+
+export const activationUserPassword = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const user = await UserModel.findById(id);
+
+        if(!user) {
+          return res.status(404).json({
+            message: 'User not found',
+        })
+        }
+
+        await user.save();
+        res.redirect(`${clientUrl}/set-new-pass/${id}`);
+        // res.json(user);
+    } catch(e) {
+        console.log(e);
+    }
+}
+export const setNewPassword = async (req, res) => {
+    try {
+        const {id, password}  = req.body;
+        const user = await UserModel.findById(id);
+
+        if(!user) {
+          return res.status(404).json({
+            message: 'User not found',
+        })
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, salt);
+        user.password = hash;
+        user.passwordRecovery = false;
+        await user.save();
+        res.json(user);
+    } catch(e) {
+        console.log(e);
+    }
+}
+
+export const checkedPasswordRecovery = async (req, res) => {
+  try {
+    const {id}  = req.params;
+    const user = await UserModel.findById(id);
+
+    if(!user) {
+      return res.status(200).json({
+        value: false,
+    })}
+
+    if(user.passwordRecovery) {
+      return res.status(200).json({
+        value: false,
+    })}
+
+    res.status(200).json({
+      value: true,
+  })
+
+} catch(e) {
+    console.log(e);
+}
+}
+
+export const changePassword = async (req, res) => {
+  try {
+      const {id, password}  = req.body;
+      const user = await UserModel.findById(id);
+
+      if(!user) {
+        return res.status(404).json({
+          message: 'User not found',
+      })
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(password, salt);
+      user.password = hash;
+      await user.save();
+      res.json(user);
+  } catch(e) {
+      console.log(e);
+  }
+}
+
+
+export const activationUserProfile = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const user = await UserModel.findById(id);
+
+        if(!user) {
+          return res.status(404).json({
+            message: 'User not found',
+        })
+        }
+
+        user.disabled = false;
+        await user.save();
+        res.redirect(`${clientUrl}`);
+        // res.json(user);
+    } catch(e) {
+        console.log(e);
+    }
+}
+
+
+export const activationUserProfileForEmail = async (req, res) => {
+    try {
+        const {email} = req.body;
+        const user = await UserModel.findOne({email});
+
+        if(!user) {
+          return res.status(404).json({
+            message: 'User not found',
+        })
+        }
+
+        if(user) {
+          Service.senMailMessageResetPassword(email, user._id, user.name)
+        }
+        res.json(user);
     } catch(e) {
         console.log(e);
     }

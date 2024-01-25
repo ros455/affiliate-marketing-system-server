@@ -1,4 +1,7 @@
 import moment from 'moment-timezone';
+import nodemailer from 'nodemailer';
+
+const api_url = 'http://localhost:4444/api/';
 
 function getRandomLetter() {
   const alphabet = 'abcdefghijklmnopqrstuvwxyz';
@@ -88,4 +91,103 @@ export const getMonthFromString = (dateString) => {
       day = day.subtract(1, 'days');
     }
     return daysArray;
+  };
+
+  export const senMailMessage = (email, id, name) => {
+    const confirmationLink = `${api_url}activation/${id}`;
+    // let transporter = nodemailer.createTransport({
+    //   host: 'smtp.ukr.net',
+    //   port: 2525,
+    //   secure: true,
+    //   auth: {
+    //     user: 'ros_kichuk@ukr.net',
+    //     pass: 'TMqZOHq231x4JkKx'
+    //   }
+    // });
+    let transporter = nodemailer.createTransport({
+      host: 'smtp.titan.email',
+      port: 465,
+      secure: true,
+      auth: {
+        user: 'info@makenude.ai',
+        pass: 'NJyyyoX6J_'
+      }
+    });
+  
+    let mailOptions = {
+      from: 'info@makenude.ai',
+      to: email,
+      subject: 'Сonfirmation of registration',
+      text: `Hello ${name}`,
+      html: 
+      `
+      <div>
+      <h1>Confirm Your Email to Start with MakeNude Affiliate Program</h1>
+      <p>Welcome to MakeNude Affiliate Program! Please click the link below to confirm your email and activate your affiliate account:</p>
+      <a href=${confirmationLink}>${confirmationLink}</a>
+      <p>Thank you for joining us, and we look forward to a successful partnership!</p>
+      <p>Best regards,</p>
+      <p>MakeNudeAi Team.</p>
+      </div>
+      `
+    };
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+  };
+  export const senMailMessageResetPassword = (email, id, name) => {
+    return new Promise((resolve, reject) => {
+      const confirmationLink = `${api_url}set-new-pass/${id}`;
+      // let transporter = nodemailer.createTransport({
+      //   host: 'smtp.ukr.net',
+      //   port: 2525,
+      //   secure: true,
+      //   auth: {
+      //     user: 'ros_kichuk@ukr.net',
+      //     pass: 'TMqZOHq231x4JkKx'
+      //   }
+      // });
+      let transporter = nodemailer.createTransport({
+        host: 'smtp.titan.email',
+        port: 465,
+        secure: true,
+        auth: {
+          user: 'info@makenude.ai',
+          pass: 'NJyyyoX6J_'
+        }
+      });
+  
+      let mailOptions = {
+        from: 'info@makenude.ai',
+        to: email,
+        subject: 'Сonfirmation of registration',
+        text: `Hello ${name}`,
+        html: 
+        `
+        <div>
+        <h1>Password Reset Instructions for Your MakeNude Affiliate Account</h1>
+        <p>I hope this message finds you well. We have received a request to reset the password for your MakeNude Affiliate account associated with this email address. Please be assured that your account security is our top priority.</p>
+        <p>To reset your password, please follow the link below. This link will guide you through a straightforward process to create a new password:</p>
+        <a href=${confirmationLink}>${confirmationLink}</a>
+        <p>If you encounter any issues or need further assistance, do not hesitate to reach out to our customer support team. We are always here to help.</p>
+        <p>Thank you for choosing MakeNude. We value your trust and are committed to ensuring the security and confidentiality of your account.</p>
+        <p>Best regards.</p>
+        </div>
+        `
+      };
+  
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log(error);
+          reject(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+          resolve(info.response);
+        }
+      });
+    });
   };

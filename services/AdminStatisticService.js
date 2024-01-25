@@ -399,7 +399,6 @@ export const calculateChartAllYears = async () => {
         });
       }
   
-      console.log('newArray', newArray);
       // Тут можна зберегти оновлену статистику
       adminStatistic.lastSevenDaysConversions = newArray;
       await adminStatistic.save();

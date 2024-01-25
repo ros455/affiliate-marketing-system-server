@@ -270,7 +270,16 @@ export const handleBuy = async () => {
 
     const resoultArray =  [];
     responseBuys.subscriptions.forEach((item) => {
-      if(item.promocode) {
+      if(item.ref_promocode) {
+        const date = moment(item.created_at);
+        const formattedDate = date.format("DD.MM.YYYY");
+        resoultArray.push({
+          codesId: item.created_at,
+          date: formattedDate,
+          value: item.price,
+          code: item.ref_promocode,
+        })
+      } else if (item.promocode) {
         const date = moment(item.created_at);
         const formattedDate = date.format("DD.MM.YYYY");
         resoultArray.push({
@@ -318,8 +327,6 @@ export const handleBuy = async () => {
         })
       }
 
-      console.log('yesterdayEvent',yesterdayEvent);
-
       if(!uniqueArrayId.includes(item.codesId) && yesterdayEvent.length) {
         yesterdayEvent[0].buys.push({
           date: yesterday,
@@ -333,7 +340,7 @@ export const handleBuy = async () => {
       if(!uniqueArrayId.includes(item.codesId)) {
         balanceValue += item.value * (partner.bonus / 100);
       }
-      console.log('balanceValue',balanceValue);
+
       if(partner.balance != balanceValue) {
         partner.balance = balanceValue.toFixed(1);;
       await partner.save();
@@ -848,7 +855,7 @@ export const createChartSevenDays = async () => {
       }
 
       const lastSevenDays = statistic.event.slice(-7);
-      console.log('lastSevenDays',lastSevenDays.length);
+
       if(lastSevenDays.length != 7) {
         const lastEvent = statistic.event;
         const chartLastSevenDays = statistic.lastSevenDays;

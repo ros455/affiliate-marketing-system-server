@@ -29,8 +29,6 @@ export const getAllPaymantsMethod = async (req,res) => {
 
         paymant.reverse();
 
-        console.log('paymant',paymant);
-
         res.json(paymant)
     } catch(error) {
         console.log(error);
